@@ -1,0 +1,11 @@
+pandas
+numpy
+sqlalchemy
+ipython
+ipywidgets
+pyodbc
+requests
+matplotlib
+ipython-sql
+psycopg2
+prettytable
