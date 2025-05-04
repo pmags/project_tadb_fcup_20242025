@@ -1,4 +1,27 @@
-## The instructions below should produce an installation of YAP under Linux:
+# project_tadb_fcup_20242025
+
+## Data Structure 
+
+
+## Data Construction
+
+
+## Prolog/PostGIS integration (for needed predicates)
+
+
+## Puzzles solutions calculation (using prolog)
+
+
+## Plotting of puzzles (initial and solution ones)
+
+
+## Final Remarks & comments
+
+
+## APPENDIX
+
+
+### The instructions below should produce an installation of YAP under Linux:
     
 sudo apt-get install git cmake build-essential swig libgmp-dev mpi-default-dev libgecode-dev libxml2-dev libraptor2-dev openjdk-11-jre openjdk-11-jdk libreadline-dev
 git clone https://github.com/vscosta/yap-6.3
