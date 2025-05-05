@@ -24,7 +24,15 @@
 				"KevinRose.vsc-python-indent",
 				"njpwerner.autodocstring",
 				"ms-toolsai.jupyter",
-				"cweijan.vscode-postgresql-client2"
+				"cweijan.vscode-postgresql-client2",
+				"GitHub.codespaces",
+				"GitHub.vscode-pull-request-github",
+				"ms-vscode.cpptools-extension-pack",
+				"ms-toolsai.vscode-jupyter-cell-tags",
+				"ms-toolsai.vscode-jupyter-slideshow",
+				"ms-ossdata.vscode-postgresql",
+				"GitHub.vscode-github-actions",
+				"GitHub.remotehub"
 			]
 		}
 	}

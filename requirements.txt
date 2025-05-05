@@ -1,11 +1,11 @@
 pandas
 numpy
+matplotlib
 sqlalchemy
 ipython
 ipywidgets
 pyodbc
 requests
-matplotlib
 ipython-sql
 psycopg2
 prettytable
