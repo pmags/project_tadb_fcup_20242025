@@ -85,10 +85,14 @@ After setup:
 
 Tasks:
 1. create database
-   psql -h db -U postgres -d postgres -f create_db.sql
+   * psql -h db -U postgres -d postgres -f create_db.sql
 2. populate databaase
-   psql -h db -U postgres -d postgres -f populate_db.sql
+   * psql -h db -U postgres -d postgres -f populate_db.sql
 3. compile the main.c program (that runs an example query using C to target postgres database db)
-   gcc -o c2postgres_example c2postgres_example.c -lpq
+   * gcc -o c2postgres_example c2postgres_example.c \
+    -I/usr/include/postgresql \
+    -L/usr/lib -L/usr/lib/x86_64-linux-gnu \
+    -lpq
+   
 
    
