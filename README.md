@@ -53,9 +53,12 @@ Project Structure:
 * devcontainer.json
 * Dockerfile
 * docker-compose.yml
-* main.c   # C code
+* c2postgres_example   # C code that runs postgres queris example
 * app.py   # Python code
 * requirements.txt   # Python dependencies
+* create_db.sql   # script to create database
+* populate_db.sql  # script to populate database
+* 
 
 
 Dockerfile:
@@ -80,4 +83,12 @@ After setup:
    * Connect to Postgres using _libpq_ in C and _psycopg2_ in Python
    * Use Prolog/YAP if needed via CLI
 
+Tasks:
+1. create database
+   psql -h db -U postgres -d postgres -f create_db.sql
+2. populate databaase
+   psql -h db -U postgres -d postgres -f populate_db.sql
+3. compile the main.c program (that runs an example query using C to target postgres database db)
+   gcc -o c2postgres_example c2postgres_example.c -lpq
 
+   
