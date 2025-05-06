@@ -27,3 +27,23 @@ RUN apt-get update && git clone https://github.com/vscosta/yap-6.3 \
     && ./configure --prefix=/usr \
     && make \
     && sudo make install
+
+# Setup SWI-Prolog
+RUN apt-get update && apt-get install -y \
+    swi-prolog \
+    swi-prolog-x \
+    swi-prolog-doc \
+    swi-prolog-compiler \
+    swi-prolog-ssl \
+    swi-prolog-swi \
+    libpl-doc
+
+# Setup Python
+RUN pip install --no-cache-dir psycopg2-binary shapely matplotlib 
+
+WORKDIR /workspace
+COPY setup_db.py .
+
+CMD ["python", "setup_db.py"]
+
+
