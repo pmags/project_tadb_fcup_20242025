@@ -97,9 +97,14 @@ Tasks:
 
 5. YAP predicate to return "SELECT * FROM PRODUCTS":
 * make c program c2postgres_yap
+* start yap ($ 'yap')
+* make sure that lib location is accesible:
+   * $ export LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
 * inside YAP, execute 'products.pl'
    * ?- consult('products.pl').
-   * ?- load_foreign_files(['./c2postgres_yap'], [], init).
+      consulting products.pl...
+      consulted /workspaces/project_tadb_fcup_20242025/products.pl in module user, 0 msec 432 bytes
+      true
    * ?- get_products.
   
    
