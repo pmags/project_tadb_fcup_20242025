@@ -65,11 +65,17 @@ This is the development environment with tools for:
 * GCC
 * Optionally, SWI-Prolog/YAP
 
+DATA:
+* POSTGRES_USER: postgres
+* POSTGRES_DB: postgres
+* POSTGRES_PASSWORD: postgres
+
 After setup: 
 * Open project in VS Code
 * Run “Dev Containers: Reopen in Container”
 * You're in a full dev environment:
    * Run Python + Postgres code
+   * postgres sql client: $ psql -h db -U postgres
    * Compile C with _gcc -lpq your.c_
    * Connect to Postgres using _libpq_ in C and _psycopg2_ in Python
    * Use Prolog/YAP if needed via CLI
