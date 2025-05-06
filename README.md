@@ -93,6 +93,15 @@ Tasks:
     -I/usr/include/postgresql \
     -L/usr/lib -L/usr/lib/x86_64-linux-gnu \
     -lpq
+4. execute test $.\c2postgres_example
+
+5. YAP predicate to return "SELECT * FROM PRODUCTS":
+* make c program c2postgres_yap
+* inside YAP, execute 'products.pl'
+   * ?- consult('products.pl').
+   * ?- load_foreign_files(['./c2postgres_yap'], [], init).
+   * ?- get_products.
+  
    
 
    
