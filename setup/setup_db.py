@@ -23,7 +23,7 @@ def wait_for_db():
     while True:
         try:
             conn = psycopg2.connect(
-                dbname="tetromino",
+                dbname="postgres",
                 user="postgres",
                 password="postgres",
                 host="db"  # importante: deve essere il nome del servizio docker-compose
@@ -39,7 +39,7 @@ def setup_db():
     wait_for_db()
 
     conn = psycopg2.connect(
-        dbname="tetromino",
+        dbname="postgres",
         user="postgres",
         password="postgres",
         host="db"
@@ -98,7 +98,6 @@ def setup_db():
     conn.commit()
     cur.close()
     conn.close()
-    print("🎉 Setup completato con successo!")
 
 if __name__ == "__main__":
     setup_db()
