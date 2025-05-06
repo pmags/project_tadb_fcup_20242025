@@ -41,7 +41,8 @@ def plot_single_tetromino(letter, color, geom_wkt, output_dir):
 def show_tetrominoes():
     """Fetches tetromino data from the database and plots/saves each one."""
     # Define the directory where renders will be saved
-    render_dir = "renders"
+    #render_dir = "renders"
+    render_dir = "/app/output"
 
     # Create the 'renders' directory if it doesn't exist
     # os.makedirs also creates intermediate directories if necessary
