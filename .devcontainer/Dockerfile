@@ -55,7 +55,10 @@ COPY setup/setup_db.py .
 COPY python/show_tetrominoes.py .
 
 # Copy the entrypoint script, which will be executed when the container starts
-COPY entrypoint.sh .
+COPY entrypoint.sh . 
+RUN echo "Current directory after copying entrypoint.sh:" && pwd && echo "Files in current directory:" && ls -l entrypoint.sh
+RUN sed -i 's/\r$//' entrypoint.sh
+
 
 # Make the entrypoint script executable so it can be run as a command
 RUN chmod +x entrypoint.sh
