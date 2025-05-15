@@ -8,4 +8,5 @@ pyodbc
 requests
 ipython-sql
 psycopg2
+shapely
 prettytable
