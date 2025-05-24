@@ -19,7 +19,10 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     openjdk-11-jre \ 
     openjdk-11-jdk \ 
     libreadline-dev \
-    libpq-dev
+    libpq-dev \
+    git \
+    make \
+    autoconf
 
 # Setup YAP
 RUN apt-get update && git clone https://github.com/vscosta/yap-6.3 \
