@@ -3,7 +3,8 @@ import time
 import matplotlib.pyplot as plt
 from shapely.wkt import loads as wkt_loads
 import matplotlib.patches as patches
-import os  # Import the os module to manage directories
+import os 
+
 
 # Set a non-interactive backend for Matplotlib, suitable for saving figures to files
 # This is important because in a non-GUI environment (like a standard Docker container),
