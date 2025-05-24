@@ -1,3 +1,6 @@
+import sys
+sys.path.append("/workspaces/project_tadb_fcup_20242025")
+
 import psycopg2
 import time
 from shapely.geometry import Polygon
@@ -5,6 +8,7 @@ from shapely.ops import unary_union
 from shapely.wkt import dumps as wkt_dumps
 from utils import show_tetrominoes
 from utils.db import connect_db
+from utils.place_tetrominos import place_tetrominoes
 
 # private methods
 def _square(x, y):
@@ -55,6 +59,7 @@ def _create_db_and_tables() -> bool:
         cur.execute("""
         CREATE EXTENSION IF NOT EXISTS postgis;
 
+        DROP TABLE IF EXISTS tetrominoes CASCADE;
         CREATE TABLE IF NOT EXISTS tetrominoes (
             id SERIAL PRIMARY KEY,
             letter CHAR(1),
@@ -62,14 +67,17 @@ def _create_db_and_tables() -> bool:
             geom geometry(POLYGON, 4326)
         );
 
+        DROP TABLE IF EXISTS puzzles CASCADE;
         CREATE TABLE IF NOT EXISTS puzzles (
             id SERIAL PRIMARY KEY,
             name TEXT,
             geom geometry(POLYGON, 4326)
         );
 
+        DROP TABLE IF EXISTS solutions CASCADE;
         CREATE TABLE IF NOT EXISTS solutions (
             id SERIAL PRIMARY KEY,
+            solution_id INT,
             puzzle_id INT REFERENCES puzzles(id),
             tetromino_id INT REFERENCES tetrominoes(id),
             geom geometry(POLYGON, 4326)
@@ -78,6 +86,7 @@ def _create_db_and_tables() -> bool:
         conn.commit()
         cur.close()
         conn.close()
+        print("✅ Database schemas created successfully!")
         return True
     
     except Exception as e:
@@ -154,11 +163,24 @@ def _insert_puzzle_examples_into_db() -> bool:
         conn.close()
         return False
 
-def _insert_puzzle_solutions_into_db() -> bool:
+def _insert_puzzle_example_solutions_into_db() -> bool:
     
-    conn = connect_db()
-    cur = conn.cursor()
-
+    ## First puzzle example
+    try:
+        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 1, dx= 0, dy= 0, orientation = 'Flat left')  # I tetromino
+        place_tetrominoes(tetromino='O',solution_id= 1, puzzle_id= 1, dx= 0, dy= 4, orientation = 'Flat down')  # O tetromino
+        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 1, dx= 2, dy= 0, orientation = 'Flat left')  # T tetromino
+        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 1, dx= 5, dy= 6, orientation = 'Flat up')  # J tetromino
+        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 1, dx= 3, dy= 0, orientation = 'Flat down')  # L tetromino
+        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 1, dx= 4, dy= 1, orientation = 'Flat left')  # S tetromino 
+        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 1, dx= 3, dy= 5, orientation = 'Flat down')  # Z tetromino
+        
+        print("✅ Example solutions uploaded successfully!")
+        return True
+    
+    except Exception as e:
+        print(f"Error inserting puzzle solutions into the database: {e}")
+        return False
 
 # main method
 def setup_db():
@@ -181,11 +203,10 @@ def setup_db():
         return
     
     # Insert initial puzzle solutions
-    if not _insert_puzzle_solutions_into_db():
+    if not _insert_puzzle_example_solutions_into_db():
         print("❌ Failed to insert puzzle solutions.")
     
     print("✅ Database setup completed.")
-    
 
 
 if __name__ == "__main__":

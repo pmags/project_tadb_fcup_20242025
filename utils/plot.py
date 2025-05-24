@@ -46,6 +46,23 @@ def plot_geometry(ax: Axes, geom: str, color: str, title: str) -> Axes:
     
     return ax
 
+def plot_solutions(solution_id: int, puzzle_id: int, ax:Axes, tite: str) -> Axes:
+    
+    # 1. fetch solution from db
+    # 2. ploy as list of polygos by converting the wkt to shapely polygons
+    # 3. create patches for each polygon
+    # 4. add patches to the axis
+    # 5. export axis
+    
+    query = """
+    SELECT 
+        *
+    FROM solutions
+    WHERE solution_id = %s AND puzzle_id = %s;
+    """
+    pass
+    
+
 def export_geometry(ax: Axes, geom: str, color: str, title: str, path: StrPath) -> bool:
     
     if path is None:
@@ -63,6 +80,7 @@ def export_geometry(ax: Axes, geom: str, color: str, title: str, path: StrPath) 
     except Exception as e:
         print(f"Error saving plot to {path}: {e}")
         return False                  
+    
 
 
 if __name__ == "__main__":
