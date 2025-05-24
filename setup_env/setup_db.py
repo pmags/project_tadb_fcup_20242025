@@ -4,22 +4,23 @@ from shapely.geometry import Polygon
 from shapely.ops import unary_union
 from shapely.wkt import dumps as wkt_dumps
 
-def square(x, y):
+# private methods
+def _square(x, y):
     return Polygon([(x, y), (x + 1, y), (x + 1, y + 1), (x, y + 1)])
 
-def get_tetrominoes():
+def _get_tetrominoes():
     tetrominoes = {
-        'I': [square(0, 0), square(1, 0), square(2, 0), square(3, 0)],
-        'O': [square(0, 0), square(1, 0), square(0, 1), square(1, 1)],
-        'T': [square(0, 0), square(1, 0), square(2, 0), square(1, 1)],
-        'J': [square(0, 0), square(0, 1), square(1, 1), square(2, 1)],
-        'L': [square(2, 0), square(0, 1), square(1, 1), square(2, 1)],
-        'S': [square(1, 0), square(2, 0), square(0, 1), square(1, 1)],
-        'Z': [square(0, 0), square(1, 0), square(1, 1), square(2, 1)],
+        'I': [_square(0, 0), _square(1, 0), _square(2, 0), _square(3, 0)],
+        'O': [_square(0, 0), _square(1, 0), _square(0, 1), _square(1, 1)],
+        'T': [_square(0, 0), _square(1, 0), _square(2, 0), _square(1, 1)],
+        'J': [_square(0, 0), _square(0, 1), _square(1, 1), _square(2, 1)],
+        'L': [_square(2, 0), _square(0, 1), _square(1, 1), _square(2, 1)],
+        'S': [_square(1, 0), _square(2, 0), _square(0, 1), _square(1, 1)],
+        'Z': [_square(0, 0), _square(1, 0), _square(1, 1), _square(2, 1)],
     }
     return tetrominoes
 
-def wait_for_db():
+def _wait_for_db():
     while True:
         try:
             conn = psycopg2.connect(
@@ -35,8 +36,10 @@ def wait_for_db():
             print("⏳ Attesa del database...")
             time.sleep(1)
 
+
+# main method
 def setup_db():
-    wait_for_db()
+    _wait_for_db()
 
     conn = psycopg2.connect(
         dbname="postgres",
@@ -77,7 +80,7 @@ def setup_db():
         'J': 'blue', 'L': 'orange', 'S': 'green', 'Z': 'red'
     }
 
-    tetrominoes = get_tetrominoes()
+    tetrominoes = _get_tetrominoes()
     for letter, squares in tetrominoes.items():
         poly = unary_union(squares)
         wkt = wkt_dumps(poly)
@@ -88,7 +91,7 @@ def setup_db():
         """, (letter, colors[letter], wkt))
 
     
-    puzzle = unary_union([square(x, y) for y in range(4) for x in range(7)])
+    puzzle = unary_union([_square(x, y) for y in range(4) for x in range(7)])
     cur.execute("""
         INSERT INTO puzzles (name, geom)
         VALUES (%s, ST_GeomFromText(%s, 4326))

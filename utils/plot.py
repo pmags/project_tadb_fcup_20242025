@@ -1,3 +1,74 @@
+import os
+import typing as t
+from typing_extensions import TypeAlias
+from pathlib import Path
+import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
+import matplotlib.patches as patches
+from shapely.wkt import loads as wkt_loads
+
+StrPath: TypeAlias = t.Union[str, os.PathLike]
+
+def plot_geometry(ax: Axes, geom: str, color: str, title: str) -> Axes:
+    """ Plots a postgis geometry on a matplotlib Axes. By ploting into an axis it can then uses with matplotlib subplot to create a grid of plots.
+    
+    example:
+    ```python
+    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+    plot_geometry(axes[0, 0], "POINT(1 1)")
+    ```
+
+    Args:
+        ax (matplotlib.axes.Axes): The Axes object to plot on.
+        geom (str): The geometry in Well-Known Text format.
+        color (str): The color to use for the geometry.
+        title (str): The title for the plot.
+
+    Returns:
+        matplotlib.axes.Axes: The Axes object that was plotted on.
+    """
+    
+    poly = wkt_loads(geom)
+    patch = patches.Polygon(
+        list(poly.exterior.coords), 
+        color=color, 
+        alpha=0.7
+    )
+    ax.add_patch(patch)
+    ax.set_title(title)
+    minx, miny, maxx, maxy = poly.bounds
+    ax.set_xlim(minx - 0.5, maxx + 0.5)
+    ax.set_ylim(miny - 0.5, maxy + 0.5)
+    ax.xaxis.set_major_locator(plt.MultipleLocator(1))
+    ax.yaxis.set_major_locator(plt.MultipleLocator(1))
+    ax.set_aspect("equal")
+    ax.grid(True, color="lightGray", linestyle="--", linewidth=0.5)
+    
+    return ax
+
+def export_geometry(ax: Axes, geom: str, color: str, title: str, path: StrPath) -> bool:
+    
+    if path is None:
+        raise ValueError("Missing path to save the plot.")
+        return False
+     
+    try:
+        save_path = Path(path).resolve()
+        fig, ax = plt.subplots()
+        plot_geometry(ax = ax, geom=geom, color=color, title=title)
+        plt.savefig(path)
+        plt.close(fig)
+        return True
+
+    except Exception as e:
+        print(f"Error saving plot to {path}: {e}")
+        return False                  
+
+
+if __name__ == "__main__":
+    pass # block run as script
+
+
 # import psycopg2
 # import matplotlib.pyplot as plt
 # from shapely.wkt import loads as wkt_loads
