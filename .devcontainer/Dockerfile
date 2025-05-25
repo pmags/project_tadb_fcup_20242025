@@ -22,7 +22,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     libpq-dev \
     git \
     make \
-    autoconf
+    autoconf \
+    pandoc
 
 # Setup YAP
 RUN apt-get update && git clone https://github.com/vscosta/yap-6.3 \

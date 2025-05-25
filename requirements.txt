@@ -12,3 +12,4 @@ shapely
 prettytable
 ipykernel
 notebook
+nbconvert
