@@ -15,15 +15,34 @@ def _square(x, y):
     return Polygon([(x, y), (x + 1, y), (x + 1, y + 1), (x, y + 1)])
 
 def _get_tetrominoes():
-    tetrominoes = {
-        'I': [_square(0, 0), _square(1, 0), _square(2, 0), _square(3, 0)],
-        'O': [_square(0, 0), _square(1, 0), _square(0, 1), _square(1, 1)],
-        'T': [_square(0, 0), _square(1, 0), _square(2, 0), _square(1, 1)],
-        'J': [_square(0, 0), _square(0, 1), _square(1, 1), _square(2, 1)],
-        'L': [_square(2, 0), _square(0, 1), _square(1, 1), _square(2, 1)],
-        'S': [_square(1, 0), _square(2, 0), _square(0, 1), _square(1, 1)],
-        'Z': [_square(0, 0), _square(1, 0), _square(1, 1), _square(2, 1)],
-    }
+    tetrominoes = [
+        {'letter': 'I', 'var_id': 1, 'squares': [_square(0, 0), _square(1, 0), _square(2, 0), _square(3, 0)]}, 
+        {'letter': 'I', 'var_id': 2, 'squares': [_square(0, 0), _square(0, 1), _square(0, 2), _square(0, 3)]},
+        
+        {'letter': 'O', 'var_id': 1, 'squares': [_square(0, 0), _square(1, 0), _square(0, 1), _square(1, 1)]},
+        
+        
+        {'letter': 'T', 'var_id': 1, 'squares': [_square(0, 1), _square(1, 1), _square(2, 1), _square(1, 0)]},
+        {'letter': 'T', 'var_id': 2, 'squares': [_square(1, 0), _square(1, 1), _square(1, 2), _square(0, 1)]},
+        {'letter': 'T', 'var_id': 3, 'squares': [_square(0, 1), _square(1, 1), _square(2, 1), _square(1, 0)]},
+        {'letter': 'T', 'var_id': 4, 'squares': [_square(1, 0), _square(1, 1), _square(1, 2), _square(2, 1)]},
+        
+        {'letter': 'J', 'var_id': 1, 'squares': [_square(0,2), _square(0,1), _square(1,1), _square(2,1)]},
+        {'letter': 'J', 'var_id': 2, 'squares': [_square(2,2), _square(1,2), _square(1,1), _square(1,0)]},
+        {'letter': 'J', 'var_id': 3, 'squares': [_square(2,0), _square(2,1), _square(1,1), _square(0,1)]},
+        {'letter': 'J', 'var_id': 4, 'squares': [_square(0,0), _square(1,0), _square(1,1), _square(1,2)]},
+        
+        {'letter': 'L', 'var_id': 1, 'squares': [_square(2,2), _square(2,1), _square(1,1), _square(0,1)]},
+        {'letter': 'L', 'var_id': 2, 'squares': [_square(2,0), _square(1,0), _square(1,1), _square(1,2)]},
+        {'letter': 'L', 'var_id': 3, 'squares': [_square(0,0), _square(0,1), _square(1,1), _square(2,1)]},
+        {'letter': 'L', 'var_id': 4, 'squares': [_square(0,2), _square(1,2), _square(1,1), _square(1,0)]},    
+        
+        {'letter': 'S', 'var_id': 1, 'squares': [_square(2,2), _square(1,2), _square(1,1), _square(0,1)]},
+        {'letter': 'S', 'var_id': 2, 'squares': [_square(1,2), _square(1,1), _square(2,1), _square(2,0)]},
+        
+        {'letter': 'Z', 'var_id': 1, 'squares': [_square(0,2), _square(1,2), _square(1,1), _square(2,1)]},
+        {'letter': 'Z', 'var_id': 2, 'squares': [_square(2,2), _square(2,1), _square(1,1), _square(1,0)]}
+    ]
     return tetrominoes
 
 def _wait_for_db():
@@ -63,6 +82,7 @@ def _create_db_and_tables() -> bool:
         CREATE TABLE IF NOT EXISTS tetrominoes (
             id SERIAL PRIMARY KEY,
             letter CHAR(1),
+            var_id INT,
             color TEXT,
             geom geometry(POLYGON, 4326)
         );
@@ -107,14 +127,19 @@ def _insert_tetrominoes_into_db() -> bool:
         }
         
         tetrominoes = _get_tetrominoes()
-        for letter, squares in tetrominoes.items():
+        #for letter, squares in tetrominoes.items():
+        for item in tetrominoes:
+            letter = item['letter']
+            squares = item['squares']
+            var_id = item['var_id']
+            
             poly = unary_union(squares)
             wkt = wkt_dumps(poly)
             cur.execute("""
-                INSERT INTO tetrominoes (letter, color, geom)
-                VALUES (%s, %s, ST_GeomFromText(%s, 4326))
+                INSERT INTO tetrominoes (letter, var_id, color, geom)
+                VALUES (%s, %s, %s, ST_GeomFromText(%s, 4326))
                 ON CONFLICT DO NOTHING;
-            """, (letter, colors[letter], wkt))
+            """, (letter, var_id, colors[letter], wkt))
         conn.commit()
         print("✅ Tetrominoes inserted successfully!")
         cur.close()
