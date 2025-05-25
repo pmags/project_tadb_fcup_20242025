@@ -167,20 +167,49 @@ def _insert_puzzle_example_solutions_into_db() -> bool:
     
     ## First puzzle example
     try:
-        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 1, dx= 0, dy= 0, orientation = 'Flat left')  # I tetromino
+        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 1, dx= 1, dy= 0, orientation = 'Flat left')  # I tetromino
         place_tetrominoes(tetromino='O',solution_id= 1, puzzle_id= 1, dx= 0, dy= 4, orientation = 'Flat down')  # O tetromino
-        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 1, dx= 2, dy= 0, orientation = 'Flat left')  # T tetromino
-        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 1, dx= 5, dy= 6, orientation = 'Flat up')  # J tetromino
-        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 1, dx= 3, dy= 0, orientation = 'Flat down')  # L tetromino
-        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 1, dx= 4, dy= 1, orientation = 'Flat left')  # S tetromino 
-        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 1, dx= 3, dy= 5, orientation = 'Flat down')  # Z tetromino
-        
-        print("✅ Example solutions uploaded successfully!")
-        return True
+        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 1, dx= 1, dy= 3, orientation = 'Flat right')  # T tetromino
+        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 1, dx= 5, dy= 2, orientation = 'Flat up')  # J tetromino
+        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 1, dx= 2, dy= 4, orientation = 'Flat down')  # L tetromino
+        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 1, dx= 5, dy= 5, orientation = 'Flat up')  # S tetromino 
+        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 1, dx= 4, dy= 1, orientation = 'Flat left')  # Z tetromino
+           
+    except Exception as e:
+        print(f"Error inserting puzzle solutions into the database: {e}")
+        return False
+
+    ## Second puzzle example
+    try:
+        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 2, dx= 0, dy= 0, orientation = 'Flat down')  # I tetromino
+        place_tetrominoes(tetromino='O',solution_id= 1, puzzle_id= 2, dx= 0, dy= 1, orientation = 'Flat down')  # O tetromino
+        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 2, dx= 5, dy= 3, orientation = 'Flat up')  # T tetromino
+        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 2, dx= 5, dy= 1, orientation = 'Flat down')  # J tetromino
+        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 2, dx= 7, dy= 2, orientation = 'Flat up')  # L tetromino
+        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 2, dx= 9, dy= 2, orientation = 'Flat up')  # S tetromino 
+        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 2, dx= 10, dy= 0, orientation = 'Flat left')  # Z tetromino
     
     except Exception as e:
         print(f"Error inserting puzzle solutions into the database: {e}")
         return False
+
+    ## Third puzzle example
+    try:
+        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 3, dx= 1, dy= 0, orientation = 'Flat left')  # I tetromino
+        place_tetrominoes(tetromino='O',solution_id= 1, puzzle_id= 3, dx= 0, dy= 6, orientation = 'Flat down')  # O tetromino
+        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 3, dx= 4, dy= 5, orientation = 'Flat left')  # T tetromino
+        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 3, dx= 0, dy= 5, orientation = 'Flat right')  # J tetromino
+        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 3, dx= 0, dy= 4, orientation = 'Flat down')  # L tetromino
+        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 3, dx= 2, dy= 5, orientation = 'Flat right')  # S tetromino 
+        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 3, dx= 1, dy= 0, orientation = 'Flat down')  # Z tetromino
+        
+    
+    except Exception as e:
+        print(f"Error inserting puzzle solutions into the database: {e}")
+        return False
+
+    print("✅ Example solutions uploaded successfully!")
+    return True
 
 # main method
 def setup_db():
@@ -204,7 +233,8 @@ def setup_db():
     
     # Insert initial puzzle solutions
     if not _insert_puzzle_example_solutions_into_db():
-        print("❌ Failed to insert puzzle solutions.")
+        print("❌ Failed to insert puzzle solutions. Aborting setup.")
+        return
     
     print("✅ Database setup completed.")
 

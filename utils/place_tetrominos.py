@@ -41,7 +41,7 @@ def place_tetrominoes(
                 %s AS puzzle_id, 
                 t.id,
                 ST_Translate(
-                    ST_Rotate(t.geom, RADIANS(%s), ST_Centroid(t.geom)), 
+                    ST_Rotate(t.geom, RADIANS(%s), ST_MakePoint(0,0)), 
                     %s, 
                     %s
                 )
@@ -52,7 +52,7 @@ def place_tetrominoes(
     """
     
     try: 
-        cur.execute(query, (solution_id, puzzle_id, radians, dx, dy, tetromino))
+        cur.execute(query, (solution_id, puzzle_id, radians, dx, dy, tetromino.lower()))
         conn.commit()
         cur.close()
         conn.close()
