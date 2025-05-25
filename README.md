@@ -1,6 +1,7 @@
 # Project TADB FCUP 2024/2025
 
-
+Export report
+´jupyter nbconvert --to pdf --TemplateExporter.exclude_input=True  report.ipynb´
 
 ## Data Structure & table creation 
 3 tables:
