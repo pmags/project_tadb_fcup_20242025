@@ -5,26 +5,60 @@
 
 
 // missing functions: @GiuseppePitruzzella
-
 //- load_db_tetraminoes_list()   returns the list of geoms of the tetraminoes (the 19, with the letter and seq)
 //- load_db_puzzle(puzzle_id)    returns the puzzle at its initial state (my view, it would be better to be a multipolygon, that is, the puzzle is a rectangle + the holes in its initial state
 //- save_db_solution(sol)        saves a multipoligon that represents the solution (the rectangle, the holes, and the tetrominoes inside it too. it saves in the solutions table.
 
 
+static PGconn *conn = NULL;
+const char *conninfo = "dbname=postgres user=postgres password=postgres host=localhost";
 
 
-PGconn *conn = NULL;
+typedef struct {
+    char letter;
+    int seq;
+    char *wkt;
+} Tetramino;
+
+
+
+int init_db() {
+    if (!conn) {
+        conn = PQconnectdb(conninfo);
+        if (PQstatus(conn) != CONNECTION_OK) {
+            fprintf(stderr, "Connection failed: %s\n", PQerrorMessage(conn));
+            PQfinish(conn);
+            conn = NULL;
+            return 1;
+        }
+    }
+return 0;
+}
+
+
+void cleanup_db() {
+    if (conn) {
+        PQfinish(conn);
+        conn = NULL;
+    }
+}
+
+
 
 void exit_on_error(PGresult *res, const char *msg) {
     fprintf(stderr, "%s: %s\n", msg, PQerrorMessage(conn));
     if (res) PQclear(res);
-    PQfinish(conn);
+    cleanup_db();
     exit(1);
 }
 
+
+// transpose_geometry/4
 // Transpose a geometry by Dx, Dy, and translate to WKT and return WKT in Result
 void transpose_geometry(const char *wkt, double dx, double dy, char **result) {
     char sql[1024];
+
+    init_db();
     snprintf(sql, sizeof(sql),
         "SELECT ST_AsText(ST_Translate(ST_GeomFromText($1, 4326), $2::float8, $3::float8))");
 
@@ -46,13 +80,15 @@ void transpose_geometry(const char *wkt, double dx, double dy, char **result) {
 
 
 
-
+// --------------------------------------------------
+// disjoint_geometry/3
 // Check if two geometries are disjoint
 int disjoint_geometry(const char *wkt1, const char *wkt2) {
     const char *sql =
         "SELECT ST_Disjoint(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326))";
     const char *paramValues[2] = { wkt1, wkt2 };
 
+    init_db();
     PGresult *res = PQexecParams(conn, sql, 2, NULL, paramValues, NULL, NULL, 0);
     if (PQresultStatus(res) != PGRES_TUPLES_OK)
         exit_on_error(res, "disjoint_geometry failed");
@@ -65,13 +101,15 @@ int disjoint_geometry(const char *wkt1, const char *wkt2) {
 
 
 
-
+// --------------------------------------------------
+// union_geometry/3
 // Union two geometries and return WKT in Result
 void union_geometry(const char *wkt1, const char *wkt2, char **result) {
     const char *sql =
         "SELECT ST_AsText(ST_Union(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326)))";
     const char *paramValues[2] = { wkt1, wkt2 };
 
+    init_db();
     PGresult *res = PQexecParams(conn, sql, 2, NULL, paramValues, NULL, NULL, 0);
     if (PQresultStatus(res) != PGRES_TUPLES_OK)
         exit_on_error(res, "union_geometry failed");
@@ -80,38 +118,42 @@ void union_geometry(const char *wkt1, const char *wkt2, char **result) {
     PQclear(res);
 }
 
+// --------------------------------------------------
+// load_db_tetraminoes_list/1
+Tetramino *load_db_tetraminoes_list(int *count) {
+    
+    // TODO: Implement this function to load tetraminoes from the database
+};
+
+// --------------------------------------------------
+// load_db_puzzle/1
+char *load_db_puzzle(int puzzle_id) {
+    
+    // TODO: Implement this function to load a puzzle from the database
+};
 
 
 
+// --------------------------------------------------
+// save_db_solution/2
+void save_db_solution(int puzzle_id, const char *wkt_solution) {
+    
+    // TODO: Implement this function to save a solution to the database
 
-// Example usage
-int main() {
-    const char *conninfo = "dbname=postgres user=postgres password=postgres host=localhost";
-    conn = PQconnectdb(conninfo);
+    // It should save the solution as a multipolygon that includes the rectangle, holes, and tetrominoes inside it.
+};
 
-    if (PQstatus(conn) != CONNECTION_OK) {
-        fprintf(stderr, "Connection failed: %s\n", PQerrorMessage(conn));
-        PQfinish(conn);
-        return 1;
-    }
 
-    const char *poly1 = "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))";
-    const char *poly2 = "POLYGON((2 2, 2 3, 3 3, 3 2, 2 2))";
 
-    char *translated = NULL;
-    transpose_geometry(poly1, 1.0, 1.0, &translated);
-    printf("Transposed Polygon: %s\n", translated);
-
-    int disjoint = disjoint_geometry(translated, poly2);
-    printf("Disjoint: %s\n", disjoint ? "true" : "false");
-
-    char *merged = NULL;
-    union_geometry(translated, poly2, &merged);
-    printf("Union Geometry: %s\n", merged);
-
-    free(translated);
-    free(merged);
-
-    PQfinish(conn);
-    return 0;
+// --------------------------------------------------
+void finalize(void) {
+    cleanup_db();
 }
+
+
+
+
+
+
+
+

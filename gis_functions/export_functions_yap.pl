@@ -1,10 +1,34 @@
+% export_functions_yap.pl
+% Prolog wrapper for YAP foreign predicates implemented in yap2c_functions.c
+
+% Load the shared object and initialize predicates by calling init_my_lib/0
+:- load_foreign_files(['./yap2c_functions'], [], init_my_lib).
 
 
 
-% Load the compiled shared object (.so) file
 
-:- foreign_file('/workspaces/project_tadb_fcup_20242025/gis_functions/yap2c_function.so',
-                [transpose_geometry/4, disjoint_geometry/3, union_geometry/3]).
+% Foreign predicate declarations matching the C signatures
 
 
 
+
+% transpose_geometry(+InputWKT, +Dx, +Dy, -OutputWKT)
+:- foreign(transpose_geometry, c, transpose_geometry(+atom, +float, +float, -atom)).
+
+% disjoint_geometry(+WKT1, +WKT2, -ResultAtom) where ResultAtom = 'true' or 'false'
+:- foreign(disjoint_geometry, c, disjoint_geometry(+atom, +atom, -atom)).
+
+% union_geometry(+WKT1, +WKT2, -OutputWKT)
+:- foreign(union_geometry, c, union_geometry(+atom, +atom, -atom)).
+
+
+
+
+% load_tetrominoes_list(-WKTMultipolygon)
+:- foreign(load_tetrominoes_list, c, load_tetrominoes_list(-atom)).
+
+% load_puzzle(+PuzzleID, -WKTMultipolygon)
+:- foreign(load_puzzle, c, load_puzzle(+integer, -atom)).
+
+% save_solution(+PuzzleID, +WKTMultipolygon)
+:- foreign(save_solution, c, save_solution(+integer, +atom)).
