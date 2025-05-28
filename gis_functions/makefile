@@ -1,24 +1,17 @@
-# Compiler and flags
-CC = gcc
-CFLAGS = -fPIC -I/usr/include/postgresql -I/usr/include/Yap
+CFLAGS = -fPIC -I/usr/include/Yap -I/usr/include/postgresql
 LDFLAGS = -shared -lpq -lm
-
-# Files
-OBJS = geo_ops.o yap2c_function.o
 TARGET = yap2c_function.so
 
 all: $(TARGET)
 
-# Object files
-geo_ops.o: geo_ops.c
-	$(CC) -c $(CFLAGS) geo_ops.c -o geo_ops.o
+$(TARGET): yap2c_function.o geo_ops.o
+	gcc $(LDFLAGS) -o $@ $^
 
-yap2c_function.o: yap2c_function.c
-	$(CC) -c $(CFLAGS) yap2c_function.c -o yap2c_function.o
+yap2c_function.o: yap2c_function.c geo_ops.h
+	gcc $(CFLAGS) -c yap2c_function.c
 
-# Link shared library
-$(TARGET): $(OBJS)
-	$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS)
+geo_ops.o: geo_ops.c geo_ops.h
+	gcc $(CFLAGS) -c geo_ops.c
 
 clean:
 	rm -f *.o *.so

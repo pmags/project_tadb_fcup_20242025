@@ -29,10 +29,36 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     texlive-latex-recommended
 
 # Setup YAP
-RUN apt-get update && git clone https://github.com/vscosta/yap-6.3 \
+# RUN apt-get update && git clone https://github.com/vscosta/yap-6.3 \
+#     && cd yap-6.3 \
+#     && ./configure --prefix=/usr \
+#     && make \
+#     && sudo make install
+
+# Setup YAP
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libgmp-dev \
+    libreadline-dev \
+    libpq-dev \
+    libxext-dev \
+    libxpm-dev \
+    libxt-dev \
+    libice-dev \
+    libsm-dev \
+    libx11-dev \
+    libxmu-dev \
+    libxaw7-dev \
+    zlib1g-dev \
+    libffi-dev \
+    libtool \
+    pkg-config \
+    git \
+    sudo \
+    && git clone https://github.com/vscosta/yap-6.3 \
     && cd yap-6.3 \
     && ./configure --prefix=/usr \
-    && make \
+    && make -j$(nproc) \
     && sudo make install
 
     
