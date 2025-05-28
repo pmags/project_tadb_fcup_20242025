@@ -14,7 +14,14 @@
 % 3. make
 % 4. yap 
 % 5. ?- [export_functions_yap].
+
+% if tests_yap.pl is in the same directory as export_functions_yap.pl, you can load it directly:
 % 6, ?- [tests_yap].
+% if tests_yap.pl is in /tests/devcontainer/    
+% 6. ?- consult('../tests/devcontainer/tests_yap.pl').
+
+
+
 
 
 :- initialization(run_tests).
