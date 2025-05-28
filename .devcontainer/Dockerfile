@@ -26,7 +26,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     pandoc \
     texlive-xetex \
     texlive-fonts-recommended \ 
-    texlive-latex-recommended
+    texlive-latex-recommended \
+    texlive-latex-extra \
+    texlive-plain-generic
 
 # Setup YAP
 RUN apt-get update && git clone https://github.com/vscosta/yap-6.3 \
