@@ -3,7 +3,7 @@
 
 % Load geometry export bindings and test definitions
 :- consult('../gis_functions/export_functions_yap.pl').
-:- consult('../devcontainer/tests_yap.pl').
+:- consult('../tests/devcontainer/tests_yap.pl').
 
 % ----------------------------------------------------------------------
 % Main solve predicate
