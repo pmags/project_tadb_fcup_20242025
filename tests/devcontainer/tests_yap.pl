@@ -27,6 +27,10 @@
 :- initialization(run_tests).
 
 run_tests :-
+    test_multipolygon,
+    test_translate_multipolygon,
+    test_union_multipolygon,
+    test_disjoint_multipolygon,
     test_transpose,
     test_disjoint,
     test_union,
@@ -46,6 +50,27 @@ print_geoms_table([G|Rest], I) :-
     format('~3d   | ~w~n', [I, G]),
     I1 is I + 1,
     print_geoms_table(Rest, I1).
+
+
+test_multipolygon :-
+    test_translate_multipolygon :-
+    WKT = 'MULTIPOLYGON(((0 0,5 0,5 5,0 5,0 0),(1 1,1 2,2 2,2 1,1 1)))',
+    translate_geometry(WKT, 1, 1, TranslatedWKT),
+    format('Translated: ~w~n', [TranslatedWKT]).
+
+test_union_multipolygon :-
+    WKT1 = 'MULTIPOLYGON(((0 0,5 0,5 5,0 5,0 0),(1 1,1 2,2 2,2 1,1 1)))',
+    WKT2 = 'POLYGON((6 0,7 0,7 1,6 1,6 0))',
+    union_geometry(WKT1, WKT2, UnionWKT),
+    format('Union: ~w~n', [UnionWKT]).
+
+test_disjoint_multipolygon :-
+    WKT1 = 'MULTIPOLYGON(((0 0,5 0,5 5,0 5,0 0),(1 1,1 2,2 2,2 1,1 1)))',
+    WKT2 = 'POLYGON((6 0,7 0,7 1,6 1,6 0))',
+    (disjoint_geometry(WKT1, WKT2) ->
+        format('Disjoint: true~n');
+        format('Disjoint: false~n')).
+    
 
 test_transpose :-
     writeln('--- transpose_geometry/4 ---'),
