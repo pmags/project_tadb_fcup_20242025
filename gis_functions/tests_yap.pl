@@ -1,5 +1,11 @@
 % tests_yap.pl - Tests for YAP-C predicates
 
+% Changelog:
+% - Initial version
+% - Added tests for transpose, disjoint, and union geometry functions
+% - Added comments for clarity
+% - Exact WKT string comparison in unions to make sure the result is exactly what you expect.
+
 
 
 % How to:
@@ -17,10 +23,22 @@ run_tests :-
     test_transpose,
     test_disjoint,
     test_union,
-    % test_load_tetrominoes,
+    test_load_tetrominoes,
     % test_load_puzzle,
     % test_save_solution,
     writeln('All tests completed.').
+
+% Helper to pretty print geometries in a tabular way
+print_geoms_table(Geoms) :-
+    writeln('Index | Geometry'),
+    writeln('------+------------------------------------------------'),
+    print_geoms_table(Geoms, 1).
+
+print_geoms_table([], _).
+print_geoms_table([G|Rest], I) :-
+    format('~3d   | ~w~n', [I, G]),
+    I1 is I + 1,
+    print_geoms_table(Rest, I1).
 
 test_transpose :-
     writeln('--- transpose_geometry/4 ---'),
@@ -58,24 +76,36 @@ test_disjoint :-
 test_union :-
     writeln('--- union_geometry/3 ---'),
     union_geometry('POINT(1 1)', 'POINT(2 2)', U1),
-    ( sub_atom(U1, 0, _, _, 'MULTIPOINT') -> writeln('Point vs Point union: OK') ; format('Point vs Point union: FAIL (Got ~w)~n', [U1]) ),
+    ( U1 = 'MULTIPOINT((1 1),(2 2))' -> writeln('Point vs Point union: OK') ; format('Point vs Point union: FAIL (Got ~w)~n', [U1]) ),
 
     union_geometry('POLYGON((0 0,1 0,1 1,0 1,0 0))',
                    'POLYGON((1 0,2 0,2 1,1 1,1 0))', U2),
-    ( sub_atom(U2, 0, _, _, 'POLYGON') -> writeln('Polygon vs Polygon union: OK') ; format('Polygon vs Polygon union: FAIL (Got ~w)~n', [U2]) ),
+    ( U2 = 'POLYGON((0 0,1 0,2 0,2 1,1 1,1 0,1 1,0 1,0 0))'
+      -> writeln('Polygon vs Polygon union: OK')
+      ; format('Polygon vs Polygon union: FAIL (Got ~w)~n', [U2])
+    ),
 
     union_geometry('POLYGON((0 0,1 0,1 1,0 1,0 0))',
                    'MULTIPOLYGON(((1 0,2 0,2 1,1 1,1 0)))', U3),
-    ( sub_atom(U3, 0, _, _, 'MULTIPOLYGON') -> writeln('Polygon vs Multipolygon union: OK') ; format('Polygon vs Multipolygon union: FAIL (Got ~w)~n', [U3]) ),
+    ( U3 = 'MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)),((1 0,2 0,2 1,1 1,1 0)))'
+      -> writeln('Polygon vs Multipolygon union: OK')
+      ; format('Polygon vs Multipolygon union: FAIL (Got ~w)~n', [U3])
+    ),
+    nl.
+
+test_load_tetrominoes :-
+    writeln('--- load_tetrominoes_list/1 ---'),
+    load_tetrominoes_list(Geoms),
+    ( nonvar(Geoms) ->
+        length(Geoms, Count),
+        format('Loaded ~d tetromino geometries:~n', [Count]),
+        print_geoms_table(Geoms),
+        writeln('load_tetrominoes_list: OK')
+    ; writeln('load_tetrominoes_list: FAIL')
+    ),
     nl.
 
 % Uncomment and improve when ready
-% test_load_tetrominoes :-
-%     load_tetrominoes_list(Geoms),
-%     writeln('load_tetrominoes_list/1:'),
-%     ( nonvar(Geoms) -> writeln('OK') ; writeln('FAIL') ),
-%     nl.
-
 % test_load_puzzle :-
 %     load_puzzle(1, PuzzleWKT),
 %     writeln('load_puzzle/2:'),
