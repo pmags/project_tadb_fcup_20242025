@@ -24,8 +24,8 @@ run_tests :-
     test_disjoint,
     test_union,
     test_load_tetrominoes,
-    % test_load_puzzle,
-    % test_save_solution,
+    test_load_puzzle,
+    test_save_solution,
     writeln('All tests completed.').
 
 % Helper to pretty print geometries in a tabular way
@@ -105,14 +105,14 @@ test_load_tetrominoes :-
     ),
     nl.
 
-% Uncomment and improve when ready
-% test_load_puzzle :-
-%     load_puzzle(1, PuzzleWKT),
-%     writeln('load_puzzle/2:'),
-%     ( nonvar(PuzzleWKT) -> writeln('OK') ; writeln('FAIL') ),
-%     nl.
 
-% test_save_solution :-
-%     save_solution(1, 'MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))'),
-%     writeln('save_solution/2: OK'),
-%     nl.
+test_load_puzzle :-
+     load_puzzle(1, PuzzleWKT),
+     writeln('load_puzzle/2:'),
+     ( nonvar(PuzzleWKT) -> writeln('OK') ; writeln('FAIL') ),
+     nl.
+
+test_save_solution :-
+     save_solution(1, 'MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))'),
+     writeln('save_solution/2: OK'),
+     nl.
