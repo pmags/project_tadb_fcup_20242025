@@ -16,9 +16,6 @@
 % union_geometry(+WKT1, +WKT2, -OutputWKT)
 :- foreign(union_geometry, c, yap_union_geometry(+atom, +atom, -atom)).
 
-
-
-
 % load_tetrominoes_list(-WKTMultipolygon)
 :- foreign(load_tetrominoes_list, c, yap_load_tetrominoes_list(-atom)).
 

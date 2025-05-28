@@ -21,6 +21,7 @@ solve(Puzzle, [tetromino(Letter, Seq, TetWKT) | Rest], FinalPuzzle) :-
     exclude(same_letter(Letter), Rest, FilteredRest),
     solve(NewPuzzle, FilteredRest, FinalPuzzle).
 
+
 % ----------------------------------------------------------------------
 % same_letter
 % ----------------------------------------------------------------------
@@ -37,6 +38,18 @@ try_place(Tet, Occupied, Placed) :-
     disjoint_geometry(Placed, Occupied, Disjoint),
     Disjoint == true,
     !.
+
+try_place(Tet, Occupied, Placed) :-
+    grid_offset(Dx, Dy),
+    format('Trying offset Dx=~w, Dy=~w~n', [Dx, Dy]),
+    transpose_geometry(Tet, Dx, Dy, Placed),
+    disjoint_geometry(Placed, Occupied, Disjoint),
+    (Disjoint == true ->
+        format('✔ Disjoint: can place at (~w,~w)~n', [Dx, Dy])
+    ;
+        format('❌ Not disjoint at (~w,~w)~n', [Dx, Dy]), fail),
+    !.
+
 
 % ----------------------------------------------------------------------
 % Generate translation offsets
