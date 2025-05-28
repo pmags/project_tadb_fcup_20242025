@@ -3,6 +3,8 @@
 #include <string.h>
 #include <libpq-fe.h>
 
+
+
 PGconn *conn = NULL;
 
 void exit_on_error(PGresult *res, const char *msg) {
@@ -12,8 +14,8 @@ void exit_on_error(PGresult *res, const char *msg) {
     exit(1);
 }
 
-// Translate a geometry by Dx, Dy and return WKT in Result
-void translate_geometry(const char *wkt, double dx, double dy, char **result) {
+// Transpose a geometry by Dx, Dy, and translate to WKT and return WKT in Result
+void transpose_geometry(const char *wkt, double dx, double dy, char **result) {
     char sql[1024];
     snprintf(sql, sizeof(sql),
         "SELECT ST_AsText(ST_Translate(ST_GeomFromText($1, 4326), $2::float8, $3::float8))");
@@ -33,6 +35,10 @@ void translate_geometry(const char *wkt, double dx, double dy, char **result) {
     PQclear(res);
 }
 
+
+
+
+
 // Check if two geometries are disjoint
 int disjoint_geometry(const char *wkt1, const char *wkt2) {
     const char *sql =
@@ -48,6 +54,10 @@ int disjoint_geometry(const char *wkt1, const char *wkt2) {
     return is_disjoint;
 }
 
+
+
+
+
 // Union two geometries and return WKT in Result
 void union_geometry(const char *wkt1, const char *wkt2, char **result) {
     const char *sql =
@@ -61,6 +71,10 @@ void union_geometry(const char *wkt1, const char *wkt2, char **result) {
     *result = strdup(PQgetvalue(res, 0, 0));
     PQclear(res);
 }
+
+
+
+
 
 // Example usage
 int main() {
@@ -77,8 +91,8 @@ int main() {
     const char *poly2 = "POLYGON((2 2, 2 3, 3 3, 3 2, 2 2))";
 
     char *translated = NULL;
-    translate_geometry(poly1, 1.0, 1.0, &translated);
-    printf("Translated Polygon: %s\n", translated);
+    transpose_geometry(poly1, 1.0, 1.0, &translated);
+    printf("Transposed Polygon: %s\n", translated);
 
     int disjoint = disjoint_geometry(translated, poly2);
     printf("Disjoint: %s\n", disjoint ? "true" : "false");
