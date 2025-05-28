@@ -8,7 +8,7 @@
 
 
 // YAP wrapper for transpose_geometry/4
-static YAP_Bool yap_transpose_geometry(void) {
+YAP_Bool yap_transpose_geometry(void) {
     const char *wkt = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG1));
     double dx = YAP_FloatOfTerm(YAP_ARG2);
     double dy = YAP_FloatOfTerm(YAP_ARG3);
@@ -25,7 +25,7 @@ static YAP_Bool yap_transpose_geometry(void) {
 
 
 // YAP wrapper for disjoint_geometry/3
-static YAP_Bool yap_disjoint_geometry(void) {
+YAP_Bool yap_disjoint_geometry(void) {
     const char *wkt1 = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG1));
     const char *wkt2 = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG2));
 
@@ -36,7 +36,7 @@ static YAP_Bool yap_disjoint_geometry(void) {
 
 
 // YAP wrapper for union_geometry/3
-static YAP_Bool yap_union_geometry(void) {
+YAP_Bool yap_union_geometry(void) {
     const char *wkt1 = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG1));
     const char *wkt2 = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG2));
     char *result = NULL;
@@ -54,12 +54,11 @@ static YAP_Bool yap_union_geometry(void) {
 
 // Register foreign predicates with YAP
 void init_my_lib(void) {
-    YAP_UserCPredicate("transpose_geometry", yap_transpose_geometry, 4);
-    YAP_UserCPredicate("disjoint_geometry", yap_disjoint_geometry, 3);
-    YAP_UserCPredicate("union_geometry", yap_union_geometry, 3);
-
-    // TODO 
     // YAP_UserCPredicate("load_tetrominoes_list", yap_load_tetrominoes_list, 1);
     // YAP_UserCPredicate("load_puzzle", yap_load_puzzle, 2);
     // YAP_UserCPredicate("save_solution", yap_save_solution, 2);
+
+    YAP_UserCPredicate("transpose_geometry", yap_transpose_geometry, 4);
+    YAP_UserCPredicate("disjoint_geometry", yap_disjoint_geometry, 3);
+    YAP_UserCPredicate("union_geometry", yap_union_geometry, 3);
 }
