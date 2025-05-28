@@ -192,13 +192,13 @@ def _insert_puzzle_example_solutions_into_db() -> bool:
     
     ## First puzzle example
     try:
-        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 1, dx= 1, dy= 0, orientation = 'Flat left')  # I tetromino
-        place_tetrominoes(tetromino='O',solution_id= 1, puzzle_id= 1, dx= 0, dy= 4, orientation = 'Flat down')  # O tetromino
-        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 1, dx= 1, dy= 3, orientation = 'Flat right')  # T tetromino
-        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 1, dx= 5, dy= 2, orientation = 'Flat up')  # J tetromino
-        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 1, dx= 2, dy= 4, orientation = 'Flat down')  # L tetromino
-        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 1, dx= 5, dy= 5, orientation = 'Flat up')  # S tetromino 
-        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 1, dx= 4, dy= 1, orientation = 'Flat left')  # Z tetromino
+        place_tetrominoes(tetromino='I', var_id = 1, solution_id= 1, puzzle_id= 1, dx= 5, dy= 0, orientation = 'Flat left')  # I tetromino
+        place_tetrominoes(tetromino='O', var_id = 1, solution_id= 1, puzzle_id= 1, dx= 3, dy= 4, orientation = 'Flat down')  # O tetromino
+        place_tetrominoes(tetromino='T', var_id = 4, solution_id= 1, puzzle_id= 1, dx= -1, dy= 0, orientation = 'Flat down')  # T tetromino
+        place_tetrominoes(tetromino='J', var_id = 3, solution_id= 1, puzzle_id= 1, dx= 0, dy= 4, orientation = 'Flat down')  # J tetromino
+        place_tetrominoes(tetromino='L', var_id = 1, solution_id= 1, puzzle_id= 1, dx= 1, dy= -1, orientation = 'Flat down')  # L tetromino
+        place_tetrominoes(tetromino='S', var_id = 2, solution_id= 1, puzzle_id= 1, dx= -1, dy= 2, orientation = 'Flat down')  # S tetromino 
+        place_tetrominoes(tetromino='Z', var_id = 2, solution_id= 1, puzzle_id= 1, dx= 1, dy= 1, orientation = 'Flat down')  # Z tetromino
            
     except Exception as e:
         print(f"Error inserting puzzle solutions into the database: {e}")
@@ -206,13 +206,13 @@ def _insert_puzzle_example_solutions_into_db() -> bool:
 
     ## Second puzzle example
     try:
-        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 2, dx= 0, dy= 0, orientation = 'Flat down')  # I tetromino
-        place_tetrominoes(tetromino='O',solution_id= 1, puzzle_id= 2, dx= 0, dy= 1, orientation = 'Flat down')  # O tetromino
-        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 2, dx= 5, dy= 3, orientation = 'Flat up')  # T tetromino
-        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 2, dx= 5, dy= 1, orientation = 'Flat down')  # J tetromino
-        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 2, dx= 7, dy= 2, orientation = 'Flat up')  # L tetromino
-        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 2, dx= 9, dy= 2, orientation = 'Flat up')  # S tetromino 
-        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 2, dx= 10, dy= 0, orientation = 'Flat left')  # Z tetromino
+        place_tetrominoes(tetromino='I',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 1, dy= 0, orientation = 'Flat down')  # I tetromino
+        place_tetrominoes(tetromino='O',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 8, dy= 0, orientation = 'Flat down')  # O tetromino
+        place_tetrominoes(tetromino='T',var_id = 4,solution_id= 1, puzzle_id= 2, dx= -1, dy= 0, orientation = 'Flat down')  # T tetromino
+        place_tetrominoes(tetromino='J',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 5, dy= -1, orientation = 'Flat down')  # J tetromino
+        place_tetrominoes(tetromino='L',var_id = 3,solution_id= 1, puzzle_id= 2, dx= 4, dy= 1, orientation = 'Flat down')  # L tetromino
+        place_tetrominoes(tetromino='S',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 6, dy= 0, orientation = 'Flat down')  # S tetromino 
+        place_tetrominoes(tetromino='Z',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 1, dy= 0, orientation = 'Flat down')  # Z tetromino
     
     except Exception as e:
         print(f"Error inserting puzzle solutions into the database: {e}")
@@ -220,13 +220,13 @@ def _insert_puzzle_example_solutions_into_db() -> bool:
 
     ## Third puzzle example
     try:
-        place_tetrominoes(tetromino='I',solution_id= 1, puzzle_id= 3, dx= 1, dy= 0, orientation = 'Flat left')  # I tetromino
-        place_tetrominoes(tetromino='O',solution_id= 1, puzzle_id= 3, dx= 0, dy= 6, orientation = 'Flat down')  # O tetromino
-        place_tetrominoes(tetromino='T',solution_id= 1, puzzle_id= 3, dx= 4, dy= 5, orientation = 'Flat left')  # T tetromino
-        place_tetrominoes(tetromino='J',solution_id= 1, puzzle_id= 3, dx= 0, dy= 5, orientation = 'Flat right')  # J tetromino
-        place_tetrominoes(tetromino='L',solution_id= 1, puzzle_id= 3, dx= 0, dy= 4, orientation = 'Flat down')  # L tetromino
-        place_tetrominoes(tetromino='S',solution_id= 1, puzzle_id= 3, dx= 2, dy= 5, orientation = 'Flat right')  # S tetromino 
-        place_tetrominoes(tetromino='Z',solution_id= 1, puzzle_id= 3, dx= 1, dy= 0, orientation = 'Flat down')  # Z tetromino
+        place_tetrominoes(tetromino='I',var_id = 2,solution_id= 1, puzzle_id= 3, dx= 1, dy= 2, orientation = 'Flat down')  # I tetromino
+        place_tetrominoes(tetromino='O',var_id = 1,solution_id= 1, puzzle_id= 3, dx= 2, dy= 4, orientation = 'Flat down')  # O tetromino
+        place_tetrominoes(tetromino='T',var_id = 4,solution_id= 1, puzzle_id= 3, dx= -1, dy= 0, orientation = 'Flat down')  # T tetromino
+        place_tetrominoes(tetromino='J',var_id = 2,solution_id= 1, puzzle_id= 3, dx=-1, dy= 5, orientation = 'Flat down')  # J tetromino
+        place_tetrominoes(tetromino='L',var_id = 1,solution_id= 1, puzzle_id= 3, dx= 1, dy= -1, orientation = 'Flat down')  # L tetromino
+        place_tetrominoes(tetromino='S',var_id = 1,solution_id= 1, puzzle_id= 3, dx= 1, dy= 5, orientation = 'Flat down')  # S tetromino 
+        place_tetrominoes(tetromino='Z',var_id = 2,solution_id= 1, puzzle_id= 3, dx= 1, dy= 1, orientation = 'Flat down')  # Z tetromino
         
     
     except Exception as e:

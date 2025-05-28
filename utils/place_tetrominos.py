@@ -9,7 +9,8 @@ import psycopg2
 from utils.db import connect_db
 
 def place_tetrominoes(
-    tetromino: str, 
+    tetromino: str,
+    var_id: int,
     solution_id: int, 
     puzzle_id: int,
     dx: int, 
@@ -60,11 +61,12 @@ def place_tetrominoes(
             FROM
                 tetrominoes AS t
             WHERE
-                LOWER(t.letter) = %s;     
+                LOWER(t.letter) = %s
+                AND var_id = %s;     
     """
     
     try: 
-        cur.execute(query, (solution_id, puzzle_id, radians, dx, dy, tetromino.lower()))
+        cur.execute(query, (solution_id, puzzle_id, radians, dx, dy, tetromino.lower(), var_id))
         conn.commit()
         cur.close()
         conn.close()
