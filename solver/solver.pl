@@ -18,6 +18,7 @@ grid_offset(Dx, Dy) :-
 % Tetrominoes is the list of tetrominoes to place
 % PlacedTetrominoes is the list of tetrominoes that have been successfully placed
 
+
 list_tetrominoes([tetromino1, tetromino2, tetromino3, tetromino4]).  % Example tetrominoes
 
 

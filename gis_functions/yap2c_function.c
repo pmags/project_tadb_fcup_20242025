@@ -74,5 +74,13 @@ void YAP_UserInit(void) {
     YAP_UserCPredicate("transpose_geometry", yap_transpose_geometry, 4);
     YAP_UserCPredicate("disjoint_geometry", yap_disjoint_geometry, 3);
     YAP_UserCPredicate("union_geometry", yap_union_geometry, 3);
+
+    // Uncomment the following lines to register additional predicates
+    // @GiuseppePitruzzella
+    
+    // YAP_UserCPredicate("load_tetrominoes_list", yap_load_tetrominoes_list ,1);
+    // YAP_UserCPredicate("load_puzzle", yap_load_puzzle, 2);
+    // YAP_UserCPredicate("save_solution", yap_save_solution, 2);
+    
 }
 
