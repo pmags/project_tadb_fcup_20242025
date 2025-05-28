@@ -4,10 +4,11 @@
 #include <libpq-fe.h>
 
 
-// missing functions:
-- load_db_tetraminoes_list()   returns the list of geoms of the tetraminoes (the 19, with the letter and seq)
-- load_db_puzzle(puzzle_id)    returns the puzzle at its initial state (my view, it would be better to be a multipolygon, that is, the puzzle is a rectangle + the holes in its initial state
-- save_db_solution(sol)        saves a multipoligon that represents the solution (the rectangle, the holes, and the tetrominoes inside it too. it saves in the solutions table.
+// missing functions: @GiuseppePitruzzella
+
+//- load_db_tetraminoes_list()   returns the list of geoms of the tetraminoes (the 19, with the letter and seq)
+//- load_db_puzzle(puzzle_id)    returns the puzzle at its initial state (my view, it would be better to be a multipolygon, that is, the puzzle is a rectangle + the holes in its initial state
+//- save_db_solution(sol)        saves a multipoligon that represents the solution (the rectangle, the holes, and the tetrominoes inside it too. it saves in the solutions table.
 
 
 
