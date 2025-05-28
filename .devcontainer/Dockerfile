@@ -63,4 +63,12 @@ RUN apt-get update && apt-get install -y \
     && make -j$(nproc) \
     && sudo make install
 
-    
+# Setup Quarto
+
+RUN mkdir -p /opt/quarto/1.5.54 \
+    && curl -o quarto.tar.gz -L \
+    "https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.54/quarto-1.5.54-linux-amd64.tar.gz" \
+    && sudo tar -zxvf quarto.tar.gz \
+    -C "/opt/quarto/1.5.54" \
+    --strip-components=1 \
+    && rm quarto.tar.gz

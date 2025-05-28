@@ -13,3 +13,4 @@ prettytable
 ipykernel
 notebook
 nbconvert
+quarto-cli
