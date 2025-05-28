@@ -35,7 +35,8 @@ int init_db() {
 return 0;
 }
 
-
+// --------------------------------------------------
+// load_db_tetraminoes_list/1
 Tetramino *load_db_tetraminoes_list(int *count) {
     init_db();
 
@@ -60,7 +61,8 @@ Tetramino *load_db_tetraminoes_list(int *count) {
     return list;
 }
 
-
+// --------------------------------------------------
+// load_db_puzzle/1
 char *load_db_puzzle(int puzzle_id) {
     init_db();
 
@@ -79,7 +81,8 @@ char *load_db_puzzle(int puzzle_id) {
     return geom;
 }
 
-
+// --------------------------------------------------
+// save_db_solution/2
 void save_db_solution(int puzzle_id, const char *wkt_solution) {
     init_db();
 
@@ -182,31 +185,6 @@ void union_geometry(const char *wkt1, const char *wkt2, char **result) {
     *result = strdup(PQgetvalue(res, 0, 0));
     PQclear(res);
 }
-
-// --------------------------------------------------
-// load_db_tetraminoes_list/1
-Tetramino *load_db_tetraminoes_list(int *count) {
-    
-    // TODO: Implement this function to load tetraminoes from the database
-};
-
-// --------------------------------------------------
-// load_db_puzzle/1
-char *load_db_puzzle(int puzzle_id) {
-    
-    // TODO: Implement this function to load a puzzle from the database
-};
-
-
-
-// --------------------------------------------------
-// save_db_solution/2
-void save_db_solution(int puzzle_id, const char *wkt_solution) {
-    
-    // TODO: Implement this function to save a solution to the database
-
-    // It should save the solution as a multipolygon that includes the rectangle, holes, and tetrominoes inside it.
-};
 
 
 
