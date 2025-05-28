@@ -36,6 +36,71 @@ return 0;
 }
 
 
+Tetramino *load_db_tetraminoes_list(int *count) {
+    init_db();
+
+    const char *sql = "SELECT letter, var_id, ST_AsText(geom) FROM tetrominoes ORDER BY id";
+    PGresult *res = PQexecParams(conn, sql, 0, NULL, NULL, NULL, NULL, 0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK)
+        exit_on_error(res, "Failed to load tetrominoes");
+
+    int rows = PQntuples(res);
+    Tetramino *list = malloc(sizeof(Tetramino) * rows);
+    if (!list) exit_on_error(res, "Memory allocation failed");
+
+    for (int i = 0; i < rows; i++) {
+        list[i].letter = PQgetvalue(res, i, 0)[0];
+        list[i].seq = atoi(PQgetvalue(res, i, 1));
+        list[i].wkt = strdup(PQgetvalue(res, i, 2));
+    }
+
+    PQclear(res);
+    *count = rows;
+    return list;
+}
+
+
+char *load_db_puzzle(int puzzle_id) {
+    init_db();
+
+    const char *sql = "SELECT ST_AsText(geom) FROM puzzles WHERE id = $1";
+    char id_str[16];
+    snprintf(id_str, sizeof(id_str), "%d", puzzle_id);
+    const char *params[1] = { id_str };
+
+    PGresult *res = PQexecParams(conn, sql, 1, NULL, params, NULL, NULL, 0);
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK || PQntuples(res) == 0)
+        exit_on_error(res, "Puzzle not found");
+
+    char *geom = strdup(PQgetvalue(res, 0, 0));
+    PQclear(res);
+    return geom;
+}
+
+
+void save_db_solution(int puzzle_id, const char *wkt_solution) {
+    init_db();
+
+    const char *sql =
+        "INSERT INTO solutions (solution_id, puzzle_id, geom) "
+        "VALUES (DEFAULT, $1::int, ST_GeomFromText($2, 4326))";
+
+    char id_str[16];
+    snprintf(id_str, sizeof(id_str), "%d", puzzle_id);
+    const char *params[2] = { id_str, wkt_solution };
+
+    PGresult *res = PQexecParams(conn, sql, 2, NULL, params, NULL, NULL, 0);
+
+    if (PQresultStatus(res) != PGRES_COMMAND_OK)
+        exit_on_error(res, "Failed to save puzzle solution");
+
+    PQclear(res);
+}
+
+
+
 void cleanup_db() {
     if (conn) {
         PQfinish(conn);
