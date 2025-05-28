@@ -37,6 +37,21 @@ return 0;
 
 
 
+void cleanup_db() {
+    if (conn) {
+        PQfinish(conn);
+        conn = NULL;
+    }
+}
+
+
+void exit_on_error(PGresult *res, const char *msg) {
+    fprintf(stderr, "%s: %s\n", msg, PQerrorMessage(conn));
+    if (res) PQclear(res);
+    cleanup_db();
+    exit(1);
+}
+
 
 // --------------------------------------------------
 // load_db_tetraminoes_list/1
@@ -111,21 +126,6 @@ void save_db_solution(int puzzle_id, const char *wkt_solution) {
 
 
 
-void cleanup_db() {
-    if (conn) {
-        PQfinish(conn);
-        conn = NULL;
-    }
-}
-
-
-
-void exit_on_error(PGresult *res, const char *msg) {
-    fprintf(stderr, "%s: %s\n", msg, PQerrorMessage(conn));
-    if (res) PQclear(res);
-    cleanup_db();
-    exit(1);
-}
 
 
 // transpose_geometry/4
@@ -158,6 +158,9 @@ void transpose_geometry(const char *wkt, double dx, double dy, char **result) {
 // --------------------------------------------------
 // disjoint_geometry/3
 // Check if two geometries are disjoint
+// ST_Disjoint(geom1, geom2) in PostGIS works with all geometry types — it returns true if the intersection is empty.
+// ST_Disjoint automatically handles all valid geometry pairs without requiring manual type casting.
+
 int disjoint_geometry(const char *wkt1, const char *wkt2) {
     const char *sql =
         "SELECT ST_Disjoint(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326))";
@@ -178,21 +181,25 @@ int disjoint_geometry(const char *wkt1, const char *wkt2) {
 
 // --------------------------------------------------
 // union_geometry/3
-// Union two geometries and return WKT in Result
+// Collect two geometries into one geometry collection (MULTIPOLYGON if both are polygons)
+// and return WKT in Result
+//
+//If both inputs are POLYGONs or MULTIPOLYGONs, the output will usually be a MULTIPOLYGON.
+// It does not merge/dissolve overlapping edges — it simply groups them.
+
 void union_geometry(const char *wkt1, const char *wkt2, char **result) {
     const char *sql =
-        "SELECT ST_AsText(ST_Union(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326)))";
+        "SELECT ST_AsText(ST_Collect(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326)))";
     const char *paramValues[2] = { wkt1, wkt2 };
 
     init_db();
     PGresult *res = PQexecParams(conn, sql, 2, NULL, paramValues, NULL, NULL, 0);
     if (PQresultStatus(res) != PGRES_TUPLES_OK)
-        exit_on_error(res, "union_geometry failed");
+        exit_on_error(res, "union_geometry (ST_Collect) failed");
 
     *result = strdup(PQgetvalue(res, 0, 0));
     PQclear(res);
 }
-
 
 
 // --------------------------------------------------

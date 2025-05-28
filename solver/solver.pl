@@ -9,12 +9,14 @@
 % Main solve predicate
 % ----------------------------------------------------------------------
 
-% The solve predicate remains mostly the same
-solve(Puzzle, [], Puzzle).
+% Base case: no more tetrominoes to place, puzzle is solved
+solve(Puzzle, [], Puzzle) :-
+    format('Puzzle solved! Final puzzle WKT: ~w~n', [Puzzle]).
 
 solve(Puzzle, [tetromino(Letter, Seq, TetWKT) | Rest], FinalPuzzle) :-
     try_place(TetWKT, Puzzle, PlacedTet),
     union_geometry(Puzzle, PlacedTet, NewPuzzle),
+    format('Placed tetromino ~w (seq ~w), new puzzle shape: ~w~n', [Letter, Seq, NewPuzzle]),
     % Remove all tetrominoes with the same Letter before continuing
     exclude(same_letter(Letter), Rest, FilteredRest),
     solve(NewPuzzle, FilteredRest, FinalPuzzle).
@@ -23,7 +25,6 @@ solve(Puzzle, [tetromino(Letter, Seq, TetWKT) | Rest], FinalPuzzle) :-
 % same_letter
 % ----------------------------------------------------------------------
 
-% Helper predicate for filtering tetrominoes by Letter
 same_letter(Letter, tetromino(Letter, _, _)).
 
 % ----------------------------------------------------------------------
@@ -32,9 +33,10 @@ same_letter(Letter, tetromino(Letter, _, _)).
 
 try_place(Tet, Occupied, Placed) :-
     grid_offset(Dx, Dy),
-    translate_geometry(Tet, Dx, Dy, Placed),
-    disjoint_geometry(Placed, Occupied),
-    !.  % Cut to prevent backtracking on successful placement
+    transpose_geometry(Tet, Dx, Dy, Placed),
+    disjoint_geometry(Placed, Occupied, Disjoint),
+    Disjoint == true,
+    !.
 
 % ----------------------------------------------------------------------
 % Generate translation offsets
@@ -45,3 +47,4 @@ grid_offset(Dx, Dy) :-
     between(0, 5, Y),
     Dx is X * 0.5,
     Dy is Y * 0.5.
+
