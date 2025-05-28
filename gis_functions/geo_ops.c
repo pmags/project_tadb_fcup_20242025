@@ -62,7 +62,7 @@ void transpose_geometry(const char *wkt, double dx, double dy, char **result) {
     snprintf(sql, sizeof(sql),
         "SELECT ST_AsText(ST_Translate(ST_GeomFromText($1, 4326), $2::float8, $3::float8))");
 
-    const char *paramValues[3] = { wkt };
+    char *paramValues[3] = { wkt };
     char dx_str[64], dy_str[64];
     snprintf(dx_str, sizeof(dx_str), "%lf", dx);
     snprintf(dy_str, sizeof(dy_str), "%lf", dy);

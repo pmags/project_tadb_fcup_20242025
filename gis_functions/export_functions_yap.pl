@@ -1,14 +1,9 @@
-% export_functions_yap.pl
-% Prolog wrapper for YAP foreign predicates implemented in yap2c_functions.c
+
+
 
 % Load the shared object and initialize predicates by calling init_my_lib/0
-:- load_foreign_files(['./yap2c_functions'], [], init_my_lib).
-
-
-
-
-% Foreign predicate declarations matching the C signatures
-
+:- load_foreign_files(['./yap2c_functions.so'], [], init_my_lib).
+:- consult(sqlcompiler).
 
 
 
