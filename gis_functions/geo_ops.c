@@ -35,6 +35,9 @@ int init_db() {
 return 0;
 }
 
+
+
+
 // --------------------------------------------------
 // load_db_tetraminoes_list/1
 Tetramino *load_db_tetraminoes_list(int *count) {
@@ -60,6 +63,10 @@ Tetramino *load_db_tetraminoes_list(int *count) {
     *count = rows;
     return list;
 }
+
+
+
+
 
 // --------------------------------------------------
 // load_db_puzzle/1
