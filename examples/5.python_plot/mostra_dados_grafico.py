@@ -30,50 +30,37 @@ conn = psycopg2.connect(
     port="5432"
 )
 
-# Nome da tabela e coluna geom
-TABLE_NAME = "sua_tabela"
-GEOM_COLUMN = "geom"
+SQL = """
+SELECT name, geom
+FROM tetrominoes
+LIMIT 10;
+"""
 
-def fetch_geometries():
-    cur = conn.cursor()
-    cur.execute(f"SELECT {GEOM_COLUMN} FROM {TABLE_NAME};")
-    geometries = []
+# === Connect to DB and fetch geometries ===
+conn = psycopg2.connect(**DB_CONFIG)
+cur = conn.cursor()
 
-    for row in cur.fetchall():
-        # PostGIS retorna o geom como bytes (WKB). Se estiver em hex, use hex=True
-        geom = wkb.loads(row[0], hex=False)
-        geometries.append(geom)
+cur.execute(SQL)
+rows = cur.fetchall()
 
-    cur.close()
-    return geometries
+fig, ax = plt.subplots()
+for name, geom in rows:
+    shapely_geom = wkb.loads(geom.tobytes())
 
-def plot_geometries(geometries):
-    fig, ax = plt.subplots()
-
-    for geom in geometries:
-        if isinstance(geom, Polygon):
-            polygons = [geom]
-        elif isinstance(geom, MultiPolygon):
-            polygons = list(geom.geoms)
+    if isinstance(shapely_geom, (Polygon, MultiPolygon)):
+        if isinstance(shapely_geom, Polygon):
+            polys = [shapely_geom]
         else:
-            continue  # Ignora outros tipos
+            polys = shapely_geom.geoms
 
-        for poly in polygons:
+        for poly in polys:
             x, y = poly.exterior.xy
-            ax.fill(x, y, alpha=0.6, edgecolor='black')
+            ax.fill(x, y, alpha=0.5, label=name)
 
-            for interior in poly.interiors:
-                x_int, y_int = interior.xy
-                ax.fill(x_int, y_int, color='white', edgecolor='black')
+plt.axis("equal")
+plt.legend()
+plt.title("Tetrominoes from PostGIS")
+plt.show()
 
-    ax.set_aspect('equal')
-    plt.title("Visualização de MultiPolygons do PostGIS")
-    plt.xlabel("Longitude")
-    plt.ylabel("Latitude")
-    plt.grid(True)
-    plt.show()
-
-if __name__ == "__main__":
-    geoms = fetch_geometries()
-    plot_geometries(geoms)
-    conn.close()
+cur.close()
+conn.close()

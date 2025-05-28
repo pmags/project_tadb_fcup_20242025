@@ -8,6 +8,7 @@ pyodbc
 requests
 ipython-sql
 psycopg2
+psycopg2-binary
 shapely
 prettytable
 ipykernel

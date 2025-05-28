@@ -15,7 +15,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": 
-		"bash -c 'sudo apt-get update && sudo apt-get install -y postgresql-client && python -m venv env && source env/bin/activate && pip install --upgrade pip && pip install -r requirements.txt && python setup_env/setup_db.py'",
+		"bash -c 'sudo apt-get update && sudo apt-get install -y postgresql-client && python -m venv env && source env/bin/activate && pip install --upgrade pip && pip install -r requirements.txt && sudo apt install -y python3-psycopg2 && sudo apt install -y python3-shapely && sudo apt install -y python3-matplotlib && python setup_env/setup_db.py'",
 
 	"customizations": {
 		"vscode": {
@@ -37,6 +37,7 @@
 				"GitHub.remotehub"
 			]
 		}
+	
 	}
 
 	// Configure tool-specific properties.

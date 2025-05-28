@@ -8,6 +8,9 @@
 import psycopg2
 from utils.db import connect_db
 
+
+
+
 def place_tetrominoes(
     tetromino: str, 
     solution_id: int, 

@@ -34,3 +34,22 @@ RUN apt-get update && git clone https://github.com/vscosta/yap-6.3 \
     && ./configure --prefix=/usr \
     && make \
     && sudo make install
+
+# Install OS packages in one shot, non-interactive
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      postgresql-client \
+      python3-psycopg2 \
+      python3-shapely \
+      python3-matplotlib \
+      build-essential 
+
+#activate env for python
+RUN python -m venv /env \
+    && /env/bin/python -m pip install --upgrade pip setuptools wheel
+
+RUN apt-get update && apt-get install -y yap libyap-dev
+    
+
+ENV VIRTUAL_ENV=/env
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
