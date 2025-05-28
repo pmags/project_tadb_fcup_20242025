@@ -16,6 +16,18 @@ def place_tetrominoes(
     dy:int , 
     orientation:str ='Flat down') -> bool:
     
+    """Places a tetromino in the database with the specified parameters.
+    Args:
+        tetromino (str): The letter representing the tetromino (e.g., 'I', 'O', 'T', 'S', 'Z', 'J', 'L').
+        solution_id (int): The ID of the solution to which this tetromino belongs.
+        puzzle_id (int): The ID of the puzzle in which the tetromino is placed.
+        dx (int): The x-coordinate offset for placing the tetromino.
+        dy (int): The y-coordinate offset for placing the tetromino.
+        orientation (str): The orientation of the tetromino. Defaults to 'Flat down'.
+    Returns:
+        bool: True if the tetromino was successfully placed, False otherwise.
+    """ 
+    
     conn = connect_db()
     cur = conn.cursor()
     
