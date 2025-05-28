@@ -100,7 +100,7 @@ def _create_db_and_tables() -> bool:
             solution_id INT,
             puzzle_id INT REFERENCES puzzles(id),
             tetromino_id INT REFERENCES tetrominoes(id),
-            geom geometry(POLYGON, 4326)
+            geom geometry(MULTIPOLYGON, 4326)
         );
         """)
         conn.commit()

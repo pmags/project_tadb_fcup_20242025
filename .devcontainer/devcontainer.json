@@ -34,7 +34,10 @@
 				"ms-toolsai.vscode-jupyter-slideshow",
 				"ms-ossdata.vscode-postgresql",
 				"GitHub.vscode-github-actions",
-				"GitHub.remotehub"
+				"GitHub.remotehub",
+				"tomoki1207.pdf",
+				"bierner.markdown-mermaid",
+				"yzane.markdown-pdf"
 			]
 		}
 	}
