@@ -54,11 +54,21 @@ YAP_Bool yap_union_geometry(void) {
 
 // Register foreign predicates with YAP
 void init_my_lib(void) {
+
+     printf(">>> init_my_lib called\n");
+
     // YAP_UserCPredicate("load_tetrominoes_list", yap_load_tetrominoes_list, 1);
     // YAP_UserCPredicate("load_puzzle", yap_load_puzzle, 2);
     // YAP_UserCPredicate("save_solution", yap_save_solution, 2);
 
     YAP_UserCPredicate("transpose_geometry", yap_transpose_geometry, 4);
+    printf(">>> YAP_UserCPredicate transpose_geometry called\n");
+
     YAP_UserCPredicate("disjoint_geometry", yap_disjoint_geometry, 3);
+    printf(">>> YAP_UserCPredicate disjoint_geometry called\n");
+
     YAP_UserCPredicate("union_geometry", yap_union_geometry, 3);
+    printf(">>> YAP_UserCPredicate - union_geometry called\n");
+
+    printf(">>> init_my_lib ended\n");
 }

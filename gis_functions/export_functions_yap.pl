@@ -19,11 +19,11 @@
 
 
 
-# % load_tetrominoes_list(-WKTMultipolygon)
-# :- foreign(load_tetrominoes_list, c, load_tetrominoes_list(-atom)).
+% load_tetrominoes_list(-WKTMultipolygon)
+% :- foreign(load_tetrominoes_list, c, load_tetrominoes_list(-atom)).
 
-# % load_puzzle(+PuzzleID, -WKTMultipolygon)
-# :- foreign(load_puzzle, c, load_puzzle(+integer, -atom)).
+% load_puzzle(+PuzzleID, -WKTMultipolygon)
+% :- foreign(load_puzzle, c, load_puzzle(+integer, -atom)).
 
-# % save_solution(+PuzzleID, +WKTMultipolygon)
-# :- foreign(save_solution, c, save_solution(+integer, +atom)).
+% save_solution(+PuzzleID, +WKTMultipolygon)
+% :- foreign(save_solution, c, save_solution(+integer, +atom)).
