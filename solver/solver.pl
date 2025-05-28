@@ -45,9 +45,9 @@ try_place(Tet, Occupied, Placed) :-
     transpose_geometry(Tet, Dx, Dy, Placed),
     disjoint_geometry(Placed, Occupied, Disjoint),
     (Disjoint == true ->
-        format('✔ Disjoint: can place at (~w,~w)~n', [Dx, Dy])
+        format('Disjoint: can place at (~w,~w)~n', [Dx, Dy])
     ;
-        format('❌ Not disjoint at (~w,~w)~n', [Dx, Dy]), fail),
+        format('Not disjoint at (~w,~w)~n', [Dx, Dy]), fail),
     !.
 
 
