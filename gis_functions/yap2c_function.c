@@ -72,3 +72,9 @@ void init_my_lib(void) {
 
     printf(">>> init_my_lib ended\n");
 }
+
+
+void init(void) {
+    // fallback to YAP initialization
+    init_my_lib();
+}
