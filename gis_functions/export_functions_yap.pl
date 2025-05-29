@@ -16,14 +16,11 @@
 % union_geometry(+WKT1, +WKT2, -OutputWKT)
 :- foreign(union_geometry, c, yap_union_geometry(+atom, +atom, -atom)).
 
-
-
-
 % load_tetrominoes_list(-WKTMultipolygon)
-% :- foreign(load_tetrominoes_list, c, load_tetrominoes_list(-atom)).
+:- foreign(load_tetrominoes_list, c, yap_load_tetrominoes_list(-atom)).
 
 % load_puzzle(+PuzzleID, -WKTMultipolygon)
-% :- foreign(load_puzzle, c, load_puzzle(+integer, -atom)).
+:- foreign(load_puzzle, c, yap_load_puzzle(+integer, -atom)).
 
 % save_solution(+PuzzleID, +WKTMultipolygon)
-% :- foreign(save_solution, c, save_solution(+integer, +atom)).
+:- foreign(save_solution, c, yap_save_solution(+integer, +atom)).
