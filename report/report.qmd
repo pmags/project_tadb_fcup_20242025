@@ -34,3 +34,39 @@ erDiagram
         geometry geom
     }
 ```
+
+## Solver
+
+## Conclusion
+
+
+```{python}
+
+import sys
+sys.path.append("/workspaces/project_tadb_fcup_20242025")
+
+import matplotlib.pyplot as plt
+from utils.plot import plot_geometry
+from utils.plot import plot_solutions
+from utils.db import connect_db
+
+```
+
+
+```{python}
+plot_solutions( puzzle_id=1, title="Puzzle 1 Solution", solution_id=1 )
+plt.show()
+```
+
+
+```{python}
+plot_solutions( puzzle_id=2, title="Puzzle 2 Solution", solution_id=1 )
+plt.show()
+```
+
+
+```{python}
+plot_solutions( puzzle_id=3, title="Puzzle 3 Solution", solution_id=1 )
+plt.show()
+
+```

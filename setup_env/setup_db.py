@@ -263,6 +263,5 @@ def setup_db():
     
     print("✅ Database setup completed.")
 
-
 if __name__ == "__main__":
     setup_db()
