@@ -11,9 +11,8 @@
 % ----------------------------------------------------------------------
 
 % Base case: no more tetrominoes to place, puzzle is solved
-solve(Puzzle, [], Puzzle) :-
-    format('[solve base] Called. Puzzle: ~w~n', [Puzzle]),
-    format('Puzzle solved! Final puzzle WKT: ~w~n', [Puzzle]).
+solve(Puzzle, AccumulatedPlacedGeom, [], Puzzle) :-
+    format('Puzzle solved! Final puzzle WKT: ~w~n', [AccumulatedPlacedGeom]).
 
 solve(Puzzle, AccumulatedPlacedGeom, [tetramino(Letter, Seq, TetWKT) | Rest], FinalPuzzle) :-
     format('[solve recursive] Called. Tet: ~w (~w),  ~w~n; Puzzle: ~w~n', [Letter, Seq, TetWKT, Puzzle]),
@@ -23,13 +22,13 @@ solve(Puzzle, AccumulatedPlacedGeom, [tetramino(Letter, Seq, TetWKT) | Rest], Fi
     format('Successfully placed tetromino ~w (Seq ~w) as ~w~n', [Letter, Seq, PlacedTet]),
     
     union_geometry(AccumulatedPlacedGeom, PlacedTet, NewAccumulatedGeom),
-    format('Placed tetromino ~w (seq ~w), new puzzle shape: ~w~n', [Letter, Seq, NewPuzzle]),
-    format('\n New accumulated geometry: ~w~n', [NewAccumulatedGeom] \n),
+
+    format('\n New accumulated geometry: ~w~n', [NewAccumulatedGeom]),
 
     % Remove all tetrominoes with the same Letter before continuing
     exclude(same_letter(Letter), Rest, FilteredRest),
     format('\n Filtered rest (removed same letter ~q): ~q~n', [Letter, FilteredRest]),
-    solve(Puzzle, NewAccumulatedGeom, FilteredRest, FinalPlacedGeom).
+    solve(Puzzle, NewAccumulatedGeom, FilteredRest, FinalPuzzle).
 
 
 % ----------------------------------------------------------------------

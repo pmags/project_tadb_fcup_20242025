@@ -1,5 +1,6 @@
 :- use_module(library(lists)).
-:- use_module(library(maplist)). % This is the name of the lists library in YAP https://www.dcc.fc.up.pt/~vsc/yap/group__maplist.html
+% This is the name of the lists library in YAP https://www.dcc.fc.up.pt/~vsc/yap/group__maplist.html
+:- use_module(library(maplist)). 
 
 :- format('Loading solver.pl...~n'),
    consult('../../solver/solver.pl'),
@@ -25,10 +26,10 @@ test_solver :-
     load_tetrominoes_list(Ts),
     format('\n {test2} load_tetrominoes_list(Ts) returned: ~w~n', [Ts]),
     InitialPlacedGeom = 'GEOMETRYCOLLECTION EMPTY',
-    solve(P,InitialPlacedGeom, Ts, Final),
+    solve(P, InitialPlacedGeom, Ts, Final),
     format('\n {test3} Final puzzle WKT: ~w~n', [Final]).
-    save_solution(1, Final),
-    format('\n {test4} Solution saved successfully!~n'),
-    assertz(solved(Final)).
+    % save_solution(1, Final),
+    % format('\n {test4} Solution saved successfully!~n'),
+    % assertz(solved(Final)).
 
 :- initialization(test_solver).
