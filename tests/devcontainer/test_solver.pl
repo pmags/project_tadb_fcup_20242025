@@ -1,4 +1,5 @@
 :- use_module(library(lists)).
+:- use_module(library(maplist)). % This is the name of the lists library in YAP https://www.dcc.fc.up.pt/~vsc/yap/group__maplist.html
 
 :- format('Loading solver.pl...~n'),
    consult('../../solver/solver.pl'),
@@ -23,8 +24,9 @@ test_solver :-
     format('\n {test1} load puzzle(1, P) returned: ~w~n', [P]),
     load_tetrominoes_list(Ts),
     format('\n {test2} load_tetrominoes_list(Ts) returned: ~w~n', [Ts]),
-    solve(P, Ts, Final),
-    format('\n {test3} Final puzzle WKT: ~w~n', [Final]),
+    InitialPlacedGeom = 'GEOMETRYCOLLECTION EMPTY',
+    solve(P,InitialPlacedGeom, Ts, Final),
+    format('\n {test3} Final puzzle WKT: ~w~n', [Final]).
     save_solution(1, Final),
     format('\n {test4} Solution saved successfully!~n'),
     assertz(solved(Final)).
