@@ -13,11 +13,16 @@
 % disjoint_geometry(+WKT1, +WKT2, -ResultAtom) where ResultAtom = 'true' or 'false'
 :- foreign(disjoint_geometry, c, yap_disjoint_geometry(+atom, +atom, -atom)).
 
+% within_geometry(+WKT1, +WKT2, -ResultAtom) where ResultAtom = 'true' or 'false'
+:- foreign(within_geometry, c, yap_within_geometry(+atom, +atom, -atom)).
+
 % union_geometry(+WKT1, +WKT2, -OutputWKT)
 :- foreign(union_geometry, c, yap_union_geometry(+atom, +atom, -atom)).
 
 % load_tetrominoes_list(-WKTMultipolygon)
-:- foreign(load_tetrominoes_list, c, yap_load_tetrominoes_list(-atom)).
+% :- foreign(load_tetrominoes_list, c, yap_load_tetrominoes_list(-atom)).
+:- foreign(load_tetrominoes_list, c, yap_load_tetrominoes_list(-term)).
+
 
 % load_puzzle(+PuzzleID, -WKTMultipolygon)
 :- foreign(load_puzzle, c, yap_load_puzzle(+integer, -atom)).

@@ -34,6 +34,16 @@ YAP_Bool yap_disjoint_geometry(void) {
     return YAP_Unify(YAP_ARG3, bool_atom);
 }
 
+// YAP wrapper for within_geometry/3
+YAP_Bool yap_within_geometry(void) {
+    const char *wkt1 = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG1));
+    const char *wkt2 = YAP_AtomName(YAP_AtomOfTerm(YAP_ARG2));
+
+    int result = within_geometry(wkt1, wkt2);
+    YAP_Term bool_atom = YAP_MkAtomTerm(YAP_LookupAtom(result ? "true" : "false"));
+    return YAP_Unify(YAP_ARG3, bool_atom);
+}
+
 
 // YAP wrapper for union_geometry/3
 YAP_Bool yap_union_geometry(void) {
@@ -62,6 +72,40 @@ static YAP_Term create_wkt_list(char **wkt_array, int count) {
     return list;
 }
 
+// Helper: additional function to export tetrominoes as list
+static YAP_Term create_tetramino_list(Tetramino *tetramino_array, int count){
+    YAP_Term yap_list_being_built = YAP_MkAtomTerm(YAP_LookupAtom("[]")); // empty list
+    YAP_Atom atom_tetromino_functor = YAP_LookupAtom("tetramino"); // create data type or structure?
+
+    for (int i = count -1; i >= 0; i--){
+        
+        // fetch and add letter
+        char letter_str[2];
+        letter_str[0] = tetramino_array[i].letter;
+        // random C strange stuff that does not know where a letter ends... intro EOS at second char
+        letter_str[1] = '\0';
+        YAP_Term term_letter = YAP_MkAtomTerm(YAP_LookupAtom(letter_str));
+        
+        // fetch the tetromino version or rotation. The data model calls it seq but database has it as var_id. 
+        YAP_Term term_seq = YAP_MkIntTerm(tetramino_array[i].seq);
+
+        // fetch the WKT geometry. Following same logic as create_wkt_list
+        YAP_Term term_wkt = YAP_MkAtomTerm(YAP_LookupAtom(tetramino_array[i].wkt));
+        
+        // Add this to the data structure. 
+        // strange C stuff -Some how this is already initialized?
+        
+        YAP_Term args[3] = {term_letter, term_seq, term_wkt};
+        YAP_Functor functor_tetromino = YAP_MkFunctor(atom_tetromino_functor, 3); //it initializes instance or variable?
+        YAP_Term tetromino_term = YAP_MkApplTerm(functor_tetromino, 3, args);
+
+        yap_list_being_built = YAP_MkPairTerm(tetromino_term, yap_list_being_built);
+        free(tetramino_array[i].wkt);
+        tetramino_array[i].wkt = NULL; // AI told me to do this and i did...
+    }
+    return yap_list_being_built;
+}
+
 
 // Wrapper for load_tetrominoes_list(-List)
 YAP_Bool yap_load_tetrominoes_list(void) {
@@ -71,13 +115,18 @@ YAP_Bool yap_load_tetrominoes_list(void) {
     }
 
     int count = 0;
-    Tetramino *tets = load_db_tetraminoes_list(&count);
-    if (!tets || count == 0) {
+    Tetramino *list = load_db_tetraminoes_list(&count);
+    if (!list || count == 0) {
+        free(list);
         return FALSE;
     }
 
+    YAP_Term tetramino_list_term = create_tetramino_list(list ,count);
+    free(list);
+    return YAP_Unify(YAP_ARG1, tetramino_list_term);
+
     // Assuming Tetramino struct has a member `char *wkt` for geometry
-    char **wkt_array = malloc(sizeof(char *) * count);
+    /*char **wkt_array = malloc(sizeof(char *) * count);
     if (!wkt_array) {
         free(tets);
         return FALSE;
@@ -91,7 +140,8 @@ YAP_Bool yap_load_tetrominoes_list(void) {
     free(wkt_array);
     free(tets);
 
-    return YAP_Unify(YAP_ARG1, wkt_list);
+    return YAP_Unify(YAP_ARG1, wkt_list);*/
+
 }
 
 
@@ -153,6 +203,9 @@ void init_my_lib(void) {
 
     YAP_UserCPredicate("disjoint_geometry", yap_disjoint_geometry, 3);
     printf(">>> YAP_UserCPredicate disjoint_geometry called\n");
+    
+    YAP_UserCPredicate("within_geometry", yap_within_geometry, 3);
+    printf(">>> YAP_UserCPredicate within_geometry called\n");
 
     YAP_UserCPredicate("union_geometry", yap_union_geometry, 3);
     printf(">>> YAP_UserCPredicate - union_geometry called\n");

@@ -110,7 +110,7 @@ void save_db_solution(int puzzle_id, const char *wkt_solution) {
 
     const char *sql =
         "INSERT INTO solutions (solution_id, puzzle_id, geom) "
-        "VALUES (DEFAULT, $1::int, ST_GeomFromText($2, 4326))";
+        "VALUES (1, $1::int, ST_GeomFromText($2, 4326))";
 
     char id_str[16];
     snprintf(id_str, sizeof(id_str), "%d", puzzle_id);
@@ -176,7 +176,23 @@ int disjoint_geometry(const char *wkt1, const char *wkt2) {
     return is_disjoint;
 }
 
+// --------------------------------------------------
+// within_geometry/3
 
+int within_geometry(const char *wkt1, const char *wkt2) {
+    const char *sql =
+        "SELECT ST_Within(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326))";
+    const char *paramValues[2] = { wkt1, wkt2 };
+
+    init_db();
+    PGresult *res = PQexecParams(conn, sql, 2, NULL, paramValues, NULL, NULL, 0);
+    if (PQresultStatus(res) != PGRES_TUPLES_OK)
+        exit_on_error(res, "within_geometry failed");
+
+    int is_within = strcmp(PQgetvalue(res, 0, 0), "t") == 0;
+    PQclear(res);
+    return is_within;
+}
 
 
 // --------------------------------------------------
@@ -188,14 +204,45 @@ int disjoint_geometry(const char *wkt1, const char *wkt2) {
 // It does not merge/dissolve overlapping edges — it simply groups them.
 
 void union_geometry(const char *wkt1, const char *wkt2, char **result) {
-    const char *sql =
-        "SELECT ST_AsText(ST_Collect(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326)))";
-    const char *paramValues[2] = { wkt1, wkt2 };
+    
+    // check if variables are not NULL
+    int wkt1_is_empty = (wkt1 == NULL || *wkt1 == '\0');
+    int wkt2_is_empty = (wkt2 == NULL || *wkt2 == '\0');
+
+    const char *sql_query = NULL;
+    char *params_values_for_pq[2] = {NULL, NULL};
+    int n_params = 0;
+
+    if (wkt1_is_empty && wkt2_is_empty) {
+        *result = strdup("GEOMETRYCOLLECTION EMPTY");
+        if (!*result) {
+            fprintf(stderr, "Memory allocation failed in union_geometry for empty result\n Stop wasting time morron!");
+            exit(1);
+        }
+        return;
+    }else if (wkt1_is_empty) {
+        sql_query = "SELECT ST_AsText(ST_GeomFromText($1, 4326))";
+        params_values_for_pq[0] = (char *)wkt2;
+        n_params = 1;
+    } else if (wkt2_is_empty) {
+        sql_query = "SELECT ST_AsText(ST_Collect(ST_GeomFromText($1, 4326)))";
+        params_values_for_pq[0] = (char *)wkt1;
+        n_params = 1;
+    } else {
+        sql_query = "SELECT ST_AsText(ST_Collect(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326)))";
+        params_values_for_pq[0] = (char *)wkt1;
+        params_values_for_pq[1] = (char *)wkt2;
+        n_params = 2;
+    }
+    
+    // const char *sql =
+    //     "SELECT ST_AsText(ST_Collect(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326)))";
+    // const char *paramValues[2] = { wkt1, wkt2 };
 
     init_db();
-    PGresult *res = PQexecParams(conn, sql, 2, NULL, paramValues, NULL, NULL, 0);
+    PGresult *res = PQexecParams(conn, sql_query, n_params, NULL, (const char *const *)params_values_for_pq, NULL, NULL, 0);
     if (PQresultStatus(res) != PGRES_TUPLES_OK)
-        exit_on_error(res, "union_geometry (ST_Collect) failed");
+         exit_on_error(res, "union_geometry (ST_Collect) failed");
 
     *result = strdup(PQgetvalue(res, 0, 0));
     PQclear(res);
