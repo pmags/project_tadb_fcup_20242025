@@ -14,21 +14,48 @@
 solve(Puzzle, AccumulatedPlacedGeom, [], Puzzle) :-
     format('Puzzle solved! Final puzzle WKT: ~w~n', [AccumulatedPlacedGeom]).
 
-solve(Puzzle, AccumulatedPlacedGeom, [tetramino(Letter, Seq, TetWKT) | Rest], FinalPuzzle) :-
-    format('[solve recursive] Called. Tet: ~w (~w),  ~w~n; Puzzle: ~w~n', [Letter, Seq, TetWKT, Puzzle]),
+solve(Puzzle, AccumulatedPlacedGeom, AllTetrominoes, FinalPuzzle) :-
+    AllTetrominoes = [tetramino(CurrentLetter, _, _) | _], 
+    format('[solve] Attempting to place a tetromino of type ~w.~n', [CurrentLetter]),
+    format('  Current Accumulated Geometry: ~w~n', [AccumulatedPlacedGeom]),
+    format('  All available tetrominoes: ~w~n', [AllTetrominoes]),
+
+    % Separate all variations of the CurrentLetter from other tetromino types
+
+    partition(same_letter(CurrentLetter), AllTetrominoes, VariationsOfCurrentLetter, TetrominoesOfOtherLetters),
+    format('  Variations for letter ~w: ~w~n', [CurrentLetter, VariationsOfCurrentLetter]),
+    format('  Remaining tetromino types to process later: ~w~n', [TetrominoesOfOtherLetters]),
+
+    % Iterate through each variation of the CurrentLetter (backtracks)
+
+    member(tetramino(CurrentLetter, Seq, TetWKTToTry), VariationsOfCurrentLetter),
+    format('  Attempting to place variation: ~w (Seq ~w), WKT: ~w~n', [CurrentLetter, Seq, TetWKTToTry]),
     
-    % try_place(TetWKT, Puzzle,  PlacedTet),
-    try_place(TetWKT, Puzzle, AccumulatedPlacedGeom, PlacedTet),
-    format('Successfully placed tetromino ~w (Seq ~w) as ~w~n', [Letter, Seq, PlacedTet]),
+    try_place(TetWKTToTry, Puzzle, AccumulatedPlacedGeom, PlacedTet), % Attempt to place this specific variation
+    format('  Successfully placed tetromino ~w (Seq ~w) as ~w~n', [CurrentLetter, Seq, PlacedTet]),
     
     union_geometry(AccumulatedPlacedGeom, PlacedTet, NewAccumulatedGeom),
+    format('  New accumulated geometry after placing ~w (Seq ~w): ~w~n', [CurrentLetter, Seq, NewAccumulatedGeom]),
 
-    format('\n New accumulated geometry: ~w~n', [NewAccumulatedGeom]),
+    % Recursively solve for the remaining types of tetrominoes
+    format('  Proceeding to solve for remaining tetromino types: ~w~n', [TetrominoesOfOtherLetters]),
+    solve(Puzzle, NewAccumulatedGeom, TetrominoesOfOtherLetters, FinalPuzzle).
 
-    % Remove all tetrominoes with the same Letter before continuing
-    exclude(same_letter(Letter), Rest, FilteredRest),
-    format('\n Filtered rest (removed same letter ~q): ~q~n', [Letter, FilteredRest]),
-    solve(Puzzle, NewAccumulatedGeom, FilteredRest, FinalPuzzle).
+# solve(Puzzle, AccumulatedPlacedGeom, [tetramino(Letter, Seq, TetWKT) | Rest], FinalPuzzle) :-
+#     format('[solve recursive] Called. Tet: ~w (~w),  ~w~n; Puzzle: ~w~n', [Letter, Seq, TetWKT, Puzzle]),
+    
+#     % try_place(TetWKT, Puzzle,  PlacedTet),
+#     try_place(TetWKT, Puzzle, AccumulatedPlacedGeom, PlacedTet),
+#     format('Successfully placed tetromino ~w (Seq ~w) as ~w~n', [Letter, Seq, PlacedTet]),
+    
+#     union_geometry(AccumulatedPlacedGeom, PlacedTet, NewAccumulatedGeom),
+
+#     format('\n New accumulated geometry: ~w~n', [NewAccumulatedGeom]),
+
+#     % Remove all tetrominoes with the same Letter before continuing
+#     exclude(same_letter(Letter), Rest, FilteredRest),
+#     format('\n Filtered rest (removed same letter ~q): ~q~n', [Letter, FilteredRest]),
+#     solve(Puzzle, NewAccumulatedGeom, FilteredRest, FinalPuzzle).
 
 
 % ----------------------------------------------------------------------
@@ -90,8 +117,7 @@ try_place(TetWKT, Puzzle, OccupiedGeom, PlacedTet) :-
 % ----------------------------------------------------------------------
 
 grid_offset(Dx, Dy) :-
-    between(0, 5, X),
-    between(0, 5, Y),
+    between(0, 10, X),
+    between(0, 10, Y),
     Dx is X * 0.5,
     Dy is Y * 0.5.
-
