@@ -5,6 +5,13 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"runArgs": [
+    	"-e", "DISPLAY=${env:DISPLAY}",
+    	"-v", "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+		],
+	"remoteEnv": {
+    	"DISPLAY": "${env:DISPLAY}"
+		},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

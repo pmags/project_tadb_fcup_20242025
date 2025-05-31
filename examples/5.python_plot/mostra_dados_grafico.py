@@ -31,7 +31,7 @@ conn = psycopg2.connect(
 )
 
 # Nome da tabela e coluna geom
-TABLE_NAME = "sua_tabela"
+TABLE_NAME = "tetrominoes"
 GEOM_COLUMN = "geom"
 
 def fetch_geometries():

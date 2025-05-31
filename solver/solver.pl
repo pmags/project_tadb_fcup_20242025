@@ -1,4 +1,3 @@
-:- use_module(library(lists)).
 :- use_module(library(maplist)). % This is the name of the lists library in YAP https://www.dcc.fc.up.pt/~vsc/yap/group__maplist.html
 :- use_module(library(geometry)).  % Geometry predicates via C FFI
 
