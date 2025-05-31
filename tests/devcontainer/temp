@@ -1,0 +1,26 @@
+
+run_solver(id_puzzle) :-
+
+    % load_puzzle(id_puzzle, P),
+    format('\n{test1} load_puzzle(1, P) returned: ~w~n', [P]),
+    plot_wkt_from_prolog(P),
+
+    writeln('[DEBUG_SOLVER] 🚀 Loading tetrominoes from DB...'),
+    load_tetrominoes_list(Tuples),
+    format('[DEBUG_SOLVER] ✅ Loaded tuples: ~w~n', [Tuples]),
+
+
+    % format('\n{test2b} Plotting each tetromino asynchronously...~n'),
+    % maplist(plot_tetromino_unblockGUI, Tuples),
+
+    writeln('[DEBUG_SOLVER] 🔄 Converting to tetramino/3...'),
+    convert_tuples_to_tetraminoes(Tuples, TetList),
+    format('[DEBUG_SOLVER] ✅ Tetramino list: ~w~n', [TetList]),
+
+    writeln('[DEBUG_SOLVER] 🧩 Grouping tetrominoes by letter...'),
+    group_tetrominoes_by_letter(TetList, Grouped),
+    format('[DEBUG_SOLVER] ✅ Grouped tetrominoes: ~w~n', [Grouped]),
+
+    writeln('[DEBUG_SOLVER] 🎯 Calling solver...'),
+    solve(Puzzle, 'GEOMETRYCOLLECTION EMPTY', Grouped, [], FinalPuzzle),
+    format('[DEBUG_SOLVER] ✅ Final Puzzle Geometry: ~w~n', [FinalPuzzle]).
