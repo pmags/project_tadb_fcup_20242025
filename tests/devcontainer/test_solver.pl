@@ -80,7 +80,7 @@ test_solver :-
     format('[DEBUG_SOLVER] Tetrominoes List by letter - INPUT: ~w~n', [TetList]),
     format('[DEBUG_SOLVER] Tetrominoes List by letter - OUTPUT: ~w~n', [TetrosGrouped]),
     
-    solve(P, 'GEOMETRYCOLLECTION EMPTY', TetrosGrouped, [], FinalPuzzle).
-    % format('[DEBUG_SOLVER] 🧩 Final puzzle geometry: ~w~n', [FinalPuzzle]),
-    % format('plotting solution puzzle ...~n'),
-    % plot_wkt_from_prolog(FinalPuzzle).
+    solve(P, 'GEOMETRYCOLLECTION EMPTY', TetrosGrouped, [], FinalPuzzle),
+    format('[DEBUG_SOLVER] 🧩 Final puzzle geometry: ~w~n', [FinalPuzzle]),
+    format('plotting solution puzzle ...~n'),
+    plot_wkt_from_prolog(FinalPuzzle).

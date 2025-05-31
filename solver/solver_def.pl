@@ -34,10 +34,22 @@ solve(Puzzle, AccGeom, [group(Letter, Variations) | RestGroups], PlacedList, Fin
 
 try_place(TetWKT, Puzzle, OccupiedGeom, PlacedTet) :-
     grid_offset(Dx, Dy),
+    format('[DEBUG_TRY_PLACE] Testing offset Dx=~w Dy=~w~n', [Dx, Dy]),
+
     transpose_geometry(TetWKT, Dx, Dy, CandidatePlacedTetWKT),
+    format('[DEBUG_TRY_PLACE] Transposed TetWKT: ~w~n', [CandidatePlacedTetWKT]),
+
     disjoint_geometry(CandidatePlacedTetWKT, OccupiedGeom, true),
+    format('[DEBUG_TRY_PLACE] ✅ Disjoint with occupied geometry ~w ~w~n', [TetWKT, OccupiedGeom]),
+
     within_geometry(CandidatePlacedTetWKT, Puzzle, true),
-    PlacedTet = CandidatePlacedTetWKT.
+    format('[DEBUG_TRY_PLACE] ✅ Within puzzle bounds ~w ~w~n', [TetWKT, OccupiedGeom]),
+
+    PlacedTet = CandidatePlacedTetWKT,
+    format('[DEBUG_TRY_PLACE] ✅ Placed Tetromino: ~w ~w ~w~n', [TetWKT, OccupiedGeom, PlacedTet]).
+
+
+
 
 
 % ----------------------
@@ -47,6 +59,6 @@ try_place(TetWKT, Puzzle, OccupiedGeom, PlacedTet) :-
 grid_offset(Dx, Dy) :-
     between(0, 10, X),
     between(0, 10, Y),
-    Dx is X * 0.5,
-    Dy is Y * 0.5.
+    Dx is float(X),
+    Dy is float(Y).
 

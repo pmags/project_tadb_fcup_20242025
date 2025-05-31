@@ -163,7 +163,13 @@ void transpose_geometry(const char *wkt, double dx, double dy, char **result) {
 
 int disjoint_geometry(const char *wkt1, const char *wkt2) {
     const char *sql =
-        "SELECT ST_Disjoint(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326))";
+        "SELECT                                                     "
+        "    CASE "
+        "        WHEN ST_IsEmpty(ST_GeomFromText($1, 4326))   "
+        "       OR ST_IsEmpty(ST_GeomFromText($2, 4326)) "
+        "        THEN true "
+        "        ELSE ST_Touches(ST_GeomFromText($1, 4326), ST_GeomFromText($2, 4326)) "
+        "    END;"; 
     const char *paramValues[2] = { wkt1, wkt2 };
 
     init_db();
