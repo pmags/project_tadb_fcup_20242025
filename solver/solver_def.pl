@@ -57,8 +57,8 @@ try_place(TetWKT, Puzzle, OccupiedGeom, PlacedTet) :-
 % ----------------------
 
 grid_offset(Dx, Dy) :-
-    between(0, 10, X),
-    between(0, 10, Y),
+    between(0, 11, X),
+    between(0, 4, Y),
     Dx is float(X),
     Dy is float(Y).
 

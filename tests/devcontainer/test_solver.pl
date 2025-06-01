@@ -1,6 +1,6 @@
 :- use_module(library(maplist)).
 :- use_module(library(system)).
-:- use_module(library(process)).
+% :- use_module(library(process)).
 :- use_module(library(lists)).
 
 % 1. ?- [export_functions_yap].
@@ -14,7 +14,9 @@
 % 2. ?- consult('../tests/devcontainer/test_solver.pl').
 
 
-:- consult('../solver/solver_def.pl').
+:- format('Loading solver.pl...~n'),
+   consult('../../solver/solver_def.pl'),
+   format('****** Loaded solver.pl successfully ******.~n').
 
 
 
@@ -68,10 +70,10 @@ same_letter(L, tetramino(L, _, _)).
 
 test_solver :-
 
-    load_puzzle(1, P),
+    load_puzzle(2, P),
     format('load_puzzle(1, P) returned: ~w~n', [P]),
     format('plotting initial puzzle ...~n'),
-    plot_wkt_from_prolog(P),
+    % plot_wkt_from_prolog(P),
     writeln('[DEBUG_SOLVER] 🚀 Loading tetrominoes from DB...'),
 
     load_tetrominoes_list(TetList),  % já é lista de tetramino/3
@@ -82,5 +84,7 @@ test_solver :-
     
     solve(P, 'GEOMETRYCOLLECTION EMPTY', TetrosGrouped, [], FinalPuzzle),
     format('[DEBUG_SOLVER] 🧩 Final puzzle geometry: ~w~n', [FinalPuzzle]),
-    format('plotting solution puzzle ...~n'),
-    plot_wkt_from_prolog(FinalPuzzle).
+    format('plotting solution puzzle ...~n').
+    % plot_wkt_from_prolog(FinalPuzzle).
+
+:- initialization(test_solver).

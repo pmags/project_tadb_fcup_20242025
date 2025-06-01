@@ -35,7 +35,13 @@ erDiagram
     }
 ```
 
+
 ## Solver
+
+> porque posgis funções
+> wkt porquê
+> organização da base ER
+> diagrama do solver
 
 ## Conclusion
 
@@ -54,19 +60,19 @@ from utils.db import connect_db
 
 
 ```{python}
-plot_solutions( puzzle_id=1, title="Puzzle 1 Solution", solution_id=1 )
-plt.show()
+#plot_solutions( puzzle_id=1, title="Puzzle 1 Solution", solution_id=1 )
+#plt.show()
 ```
 
 
 ```{python}
-plot_solutions( puzzle_id=2, title="Puzzle 2 Solution", solution_id=1 )
-plt.show()
+#plot_solutions( puzzle_id=2, title="Puzzle 2 Solution", solution_id=1 )
+#plt.show()
 ```
 
 
 ```{python}
-plot_solutions( puzzle_id=3, title="Puzzle 3 Solution", solution_id=1 )
-plt.show()
+#plot_solutions( puzzle_id=3, title="Puzzle 3 Solution", solution_id=1 )
+#plt.show()
 
 ```
