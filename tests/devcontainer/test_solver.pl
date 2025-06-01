@@ -70,7 +70,7 @@ same_letter(L, tetramino(L, _, _)).
 
 test_solver :-
 
-    load_puzzle(2, P),
+    load_puzzle(22, P),
     format('load_puzzle(1, P) returned: ~w~n', [P]),
     format('plotting initial puzzle ...~n'),
     % plot_wkt_from_prolog(P),
