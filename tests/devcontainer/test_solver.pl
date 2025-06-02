@@ -70,7 +70,7 @@ same_letter(L, tetramino(L, _, _)).
 
 test_solver :-
 
-    load_puzzle(22, P),
+    load_puzzle(2, P),
     format('load_puzzle(1, P) returned: ~w~n', [P]),
     format('plotting initial puzzle ...~n'),
     % plot_wkt_from_prolog(P),
@@ -84,7 +84,8 @@ test_solver :-
     
     solve(P, 'GEOMETRYCOLLECTION EMPTY', TetrosGrouped, [], FinalPuzzle),
     format('[DEBUG_SOLVER] 🧩 Final puzzle geometry: ~w~n', [FinalPuzzle]),
-    format('plotting solution puzzle ...~n').
+    format('plotting solution puzzle ...~n'),
+    save_solution(1, FinalPuzzle).
     % plot_wkt_from_prolog(FinalPuzzle).
 
 :- initialization(test_solver).
