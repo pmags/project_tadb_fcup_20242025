@@ -3,12 +3,12 @@ sys.path.append("/workspaces/project_tadb_fcup_20242025")
 
 import psycopg2
 import time
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, MultiPolygon
 from shapely.ops import unary_union
 from shapely.wkt import dumps as wkt_dumps
-from utils import show_tetrominoes
+from shapely.wkt import loads as wkt_loads
 from utils.db import connect_db
-from utils.place_tetrominos import place_tetrominoes
+from utils.place_tetrominos import place_tetrominoes, example_place_tetrominoes
 
 # private methods
 def _square(x, y):
@@ -97,9 +97,8 @@ def _create_db_and_tables() -> bool:
         DROP TABLE IF EXISTS solutions CASCADE;
         CREATE TABLE IF NOT EXISTS solutions (
             id SERIAL PRIMARY KEY,
-            solution_id INT,
+            solution_id SERIAL,
             puzzle_id INT REFERENCES puzzles(id),
-            tetromino_id INT REFERENCES tetrominoes(id),
             geom geometry(MULTIPOLYGON, 4326)
         );
         """)
@@ -189,45 +188,171 @@ def _insert_puzzle_examples_into_db() -> bool:
         return False
 
 def _insert_puzzle_example_solutions_into_db() -> bool:
+        
+    insert_query_template = """
+        INSERT INTO solutions (solution_id, puzzle_id, geom)
+        SELECT
+            %s AS solution_id,
+            %s AS puzzle_id,
+            ST_GeomFromText(%s, 4326) AS geom
+        FROM
+            tetrominoes AS t
+        WHERE
+            LOWER(t.letter) = %s
+            AND var_id = %s
+        LIMIT 1;
+    """
     
     ## First puzzle example
     try:
-        place_tetrominoes(tetromino='I', var_id = 1, solution_id= 1, puzzle_id= 1, dx= 5, dy= 0, orientation = 'Flat left')  # I tetromino
-        place_tetrominoes(tetromino='O', var_id = 1, solution_id= 1, puzzle_id= 1, dx= 3, dy= 4, orientation = 'Flat down')  # O tetromino
-        place_tetrominoes(tetromino='T', var_id = 4, solution_id= 1, puzzle_id= 1, dx= -1, dy= 0, orientation = 'Flat down')  # T tetromino
-        place_tetrominoes(tetromino='J', var_id = 3, solution_id= 1, puzzle_id= 1, dx= 0, dy= 4, orientation = 'Flat down')  # J tetromino
-        place_tetrominoes(tetromino='L', var_id = 1, solution_id= 1, puzzle_id= 1, dx= 1, dy= -1, orientation = 'Flat down')  # L tetromino
-        place_tetrominoes(tetromino='S', var_id = 2, solution_id= 1, puzzle_id= 1, dx= -1, dy= 2, orientation = 'Flat down')  # S tetromino 
-        place_tetrominoes(tetromino='Z', var_id = 2, solution_id= 1, puzzle_id= 1, dx= 1, dy= 1, orientation = 'Flat down')  # Z tetromino
-           
-    except Exception as e:
-        print(f"Error inserting puzzle solutions into the database: {e}")
-        return False
-
-    ## Second puzzle example
-    try:
-        place_tetrominoes(tetromino='I',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 1, dy= 0, orientation = 'Flat down')  # I tetromino
-        place_tetrominoes(tetromino='O',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 8, dy= 0, orientation = 'Flat down')  # O tetromino
-        place_tetrominoes(tetromino='T',var_id = 4,solution_id= 1, puzzle_id= 2, dx= -1, dy= 0, orientation = 'Flat down')  # T tetromino
-        place_tetrominoes(tetromino='J',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 5, dy= -1, orientation = 'Flat down')  # J tetromino
-        place_tetrominoes(tetromino='L',var_id = 3,solution_id= 1, puzzle_id= 2, dx= 4, dy= 1, orientation = 'Flat down')  # L tetromino
-        place_tetrominoes(tetromino='S',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 6, dy= 0, orientation = 'Flat down')  # S tetromino 
-        place_tetrominoes(tetromino='Z',var_id = 1,solution_id= 1, puzzle_id= 2, dx= 1, dy= 0, orientation = 'Flat down')  # Z tetromino
+        puzzle_solution_id = 1
+        puzzle_id = 1
+        puzzle_placements = [
+            {'tetromino': 'I', 'var_id': 1, 'dx': 5, 'dy': 0},
+            {'tetromino': 'O', 'var_id': 1, 'dx': 3, 'dy': 4},
+            {'tetromino': 'T', 'var_id': 4, 'dx': -1, 'dy': 0},
+            {'tetromino': 'J', 'var_id': 3, 'dx': 0, 'dy': 4},
+            {'tetromino': 'L', 'var_id': 1, 'dx': 1, 'dy': -1},
+            {'tetromino': 'S', 'var_id': 2, 'dx': -1, 'dy': 2},
+            {'tetromino': 'Z', 'var_id': 2, 'dx': 1, 'dy': 1}
+        ]
+        
+        polygon_wkt_list = []
+        for i, placement in enumerate(puzzle_placements):
+            wkt_str = example_place_tetrominoes(
+                tetromino=placement['tetromino'],
+                var_id=placement['var_id'],
+                dx=placement['dx'],
+                dy=placement['dy']
+            )
+            if wkt_str:
+                polygon_wkt_list.append(wkt_str)
+            else:
+                raise Exception(f"Failed to get WKT for {placement} in puzzle {puzzle_id} solution")
+        
+        shapely_polygons = [wkt_loads(s) for s in polygon_wkt_list]
+        multi_polygon = MultiPolygon(shapely_polygons)
+        multi_polygon_wkt = multi_polygon.wkt        
+        
+        conn = connect_db()
+        cur = conn.cursor()
+        first_tetromino = puzzle_placements[0]
+        cur.execute(insert_query_template, (
+            puzzle_solution_id,
+            puzzle_id,
+            multi_polygon_wkt,
+            first_tetromino['tetromino'].lower(),
+            first_tetromino['var_id']
+        ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        conn, cur = None, None
+        
     
     except Exception as e:
         print(f"Error inserting puzzle solutions into the database: {e}")
         return False
+    
 
-    ## Third puzzle example
+    ## Second puzzle example
+           
     try:
-        place_tetrominoes(tetromino='I',var_id = 2,solution_id= 1, puzzle_id= 3, dx= 1, dy= 2, orientation = 'Flat down')  # I tetromino
-        place_tetrominoes(tetromino='O',var_id = 1,solution_id= 1, puzzle_id= 3, dx= 2, dy= 4, orientation = 'Flat down')  # O tetromino
-        place_tetrominoes(tetromino='T',var_id = 4,solution_id= 1, puzzle_id= 3, dx= -1, dy= 0, orientation = 'Flat down')  # T tetromino
-        place_tetrominoes(tetromino='J',var_id = 2,solution_id= 1, puzzle_id= 3, dx=-1, dy= 5, orientation = 'Flat down')  # J tetromino
-        place_tetrominoes(tetromino='L',var_id = 1,solution_id= 1, puzzle_id= 3, dx= 1, dy= -1, orientation = 'Flat down')  # L tetromino
-        place_tetrominoes(tetromino='S',var_id = 1,solution_id= 1, puzzle_id= 3, dx= 1, dy= 5, orientation = 'Flat down')  # S tetromino 
-        place_tetrominoes(tetromino='Z',var_id = 2,solution_id= 1, puzzle_id= 3, dx= 1, dy= 1, orientation = 'Flat down')  # Z tetromino
+        puzzle_solution_id = 1
+        puzzle_id = 2
+        puzzle_placements = [
+            {'tetromino': 'I', 'var_id': 1, 'dx': 1, 'dy': 0},
+            {'tetromino': 'O', 'var_id': 1, 'dx': 8, 'dy': 0},
+            {'tetromino': 'T', 'var_id': 4, 'dx': -1, 'dy': 0},
+            {'tetromino': 'J', 'var_id': 1, 'dx': 5, 'dy': -1},
+            {'tetromino': 'L', 'var_id': 3, 'dx': 4, 'dy': 1},
+            {'tetromino': 'S', 'var_id': 1, 'dx': 6, 'dy': 0},
+            {'tetromino': 'Z', 'var_id': 1, 'dx': 1, 'dy': 0}
+        ]
         
+        polygon_wkt_list = []
+        for i, placement in enumerate(puzzle_placements):
+            wkt_str = example_place_tetrominoes(
+                tetromino=placement['tetromino'],
+                var_id=placement['var_id'],
+                dx=placement['dx'],
+                dy=placement['dy']
+            )
+            if wkt_str:
+                polygon_wkt_list.append(wkt_str)
+            else:
+                raise Exception(f"Failed to get WKT for {placement} in puzzle {puzzle_id} solution")
+        
+        shapely_polygons = [wkt_loads(s) for s in polygon_wkt_list]
+        multi_polygon = MultiPolygon(shapely_polygons)
+        multi_polygon_wkt = multi_polygon.wkt        
+        
+        conn = connect_db()
+        cur = conn.cursor()
+        first_tetromino = puzzle_placements[0]
+        cur.execute(insert_query_template, (
+            puzzle_solution_id,
+            puzzle_id,
+            multi_polygon_wkt,
+            first_tetromino['tetromino'].lower(),
+            first_tetromino['var_id']
+        ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        conn, cur = None, None
+    
+    except Exception as e:
+        print(f"Error inserting puzzle solutions into the database: {e}")
+        return False
+    
+    
+    ## Third puzzle example       
+    
+    try:
+        puzzle_solution_id = 1
+        puzzle_id = 3
+        puzzle_placements = [
+            {'tetromino': 'I', 'var_id': 2, 'dx': 1, 'dy': 2},
+            {'tetromino': 'O', 'var_id': 1, 'dx': 2, 'dy': 4},
+            {'tetromino': 'T', 'var_id': 4, 'dx': -1, 'dy': 0},
+            {'tetromino': 'J', 'var_id': 2, 'dx': 1, 'dy': 5},
+            {'tetromino': 'L', 'var_id': 1, 'dx': 1, 'dy': -1},
+            {'tetromino': 'S', 'var_id': 1, 'dx': 1, 'dy': 5},
+            {'tetromino': 'Z', 'var_id': 2, 'dx': 1, 'dy': 1}
+        ]
+        
+        polygon_wkt_list = []
+        for i, placement in enumerate(puzzle_placements):
+            wkt_str = example_place_tetrominoes(
+                tetromino=placement['tetromino'],
+                var_id=placement['var_id'],
+                dx=placement['dx'],
+                dy=placement['dy']
+            )
+            if wkt_str:
+                polygon_wkt_list.append(wkt_str)
+            else:
+                raise Exception(f"Failed to get WKT for {placement} in puzzle {puzzle_id} solution")
+        
+        shapely_polygons = [wkt_loads(s) for s in polygon_wkt_list]
+        multi_polygon = MultiPolygon(shapely_polygons)
+        multi_polygon_wkt = multi_polygon.wkt        
+        
+        conn = connect_db()
+        cur = conn.cursor()
+        first_tetromino = puzzle_placements[0]
+        cur.execute(insert_query_template, (
+            puzzle_solution_id,
+            puzzle_id,
+            multi_polygon_wkt,
+            first_tetromino['tetromino'].lower(),
+            first_tetromino['var_id']
+        ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        conn, cur = None, None
     
     except Exception as e:
         print(f"Error inserting puzzle solutions into the database: {e}")

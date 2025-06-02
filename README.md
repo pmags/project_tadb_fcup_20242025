@@ -2,6 +2,8 @@
 
 Export report
 ´jupyter nbconvert --to pdf --TemplateExporter.exclude_input=True  report.ipynb´
+ yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g "test_solver(2)."
+ yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g "test_solver(2), halt."
 
 ## Data Structure & table creation 
 3 tables:
