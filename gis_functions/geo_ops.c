@@ -110,7 +110,7 @@ void save_db_solution(int puzzle_id, const char *wkt_solution) {
 
     const char *sql =
         "INSERT INTO solutions (solution_id, puzzle_id, geom) "
-        "VALUES (1, $1::int, ST_GeomFromText($2, 4326))";
+        "VALUES (1, $1::int, ST_CollectionExtract(ST_GeomFromText($2, 4326), 3))";
 
     char id_str[16];
     snprintf(id_str, sizeof(id_str), "%d", puzzle_id);
