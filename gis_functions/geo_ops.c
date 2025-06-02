@@ -108,9 +108,17 @@ char *load_db_puzzle(int puzzle_id) {
 void save_db_solution(int puzzle_id, const char *wkt_solution) {
     init_db();
 
+    // const char *sql =
+    //     "INSERT INTO solutions (solution_id, puzzle_id, geom) "
+    //     "VALUES (1, $1::int, ST_CollectionExtract(ST_GeomFromText($2, 4326), 3))";
+
     const char *sql =
         "INSERT INTO solutions (solution_id, puzzle_id, geom) "
-        "VALUES (1, $1::int, ST_CollectionExtract(ST_GeomFromText($2, 4326), 3))";
+        "VALUES ("
+        "    (SELECT COALESCE(MAX(solution_id), 0) + 1 FROM solutions WHERE puzzle_id = $1::int),"
+        "    $1::int,"
+        "    ST_CollectionExtract(ST_GeomFromText($2, 4326), 3)"
+        ")";
 
     char id_str[16];
     snprintf(id_str, sizeof(id_str), "%d", puzzle_id);

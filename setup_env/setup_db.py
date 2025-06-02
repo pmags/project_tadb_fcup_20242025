@@ -208,7 +208,7 @@ def _insert_puzzle_example_solutions_into_db() -> bool:
         puzzle_solution_id = 1
         puzzle_id = 1
         puzzle_placements = [
-            {'tetromino': 'I', 'var_id': 1, 'dx': 5, 'dy': 0},
+            {'tetromino': 'I', 'var_id': 2, 'dx': 4, 'dy': 0},
             {'tetromino': 'O', 'var_id': 1, 'dx': 3, 'dy': 4},
             {'tetromino': 'T', 'var_id': 4, 'dx': -1, 'dy': 0},
             {'tetromino': 'J', 'var_id': 3, 'dx': 0, 'dy': 4},
@@ -316,7 +316,7 @@ def _insert_puzzle_example_solutions_into_db() -> bool:
             {'tetromino': 'I', 'var_id': 2, 'dx': 1, 'dy': 2},
             {'tetromino': 'O', 'var_id': 1, 'dx': 2, 'dy': 4},
             {'tetromino': 'T', 'var_id': 4, 'dx': -1, 'dy': 0},
-            {'tetromino': 'J', 'var_id': 2, 'dx': 1, 'dy': 5},
+            {'tetromino': 'J', 'var_id': 2, 'dx': -1, 'dy': 5},
             {'tetromino': 'L', 'var_id': 1, 'dx': 1, 'dy': -1},
             {'tetromino': 'S', 'var_id': 1, 'dx': 1, 'dy': 5},
             {'tetromino': 'Z', 'var_id': 2, 'dx': 1, 'dy': 1}
