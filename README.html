@@ -6,11 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Lourenço">
-<meta name="author" content="Pedro">
-<meta name="author" content="Giuseppe">
 
-<title>Practical Assignment of Advanced Topics in Databases</title>
+<title>readme</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -26,90 +23,71 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="report_files/libs/clipboard/clipboard.min.js"></script>
-<script src="report_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="report_files/libs/quarto-html/popper.min.js"></script>
-<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="report_files/libs/quarto-html/anchor.min.js"></script>
-<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="report_files/libs/bootstrap/bootstrap-0d15e2584734b7a94bf6c13325fc7617.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="report_files/libs/quarto-diagram/mermaid.min.js"></script>
-<script src="report_files/libs/quarto-diagram/mermaid-init.js"></script>
-<link href="report_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="README_files/libs/clipboard/clipboard.min.js"></script>
+<script src="README_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="README_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="README_files/libs/quarto-html/popper.min.js"></script>
+<script src="README_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="README_files/libs/quarto-html/anchor.min.js"></script>
+<link href="README_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="README_files/libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="README_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="README_files/libs/bootstrap/bootstrap-0d15e2584734b7a94bf6c13325fc7617.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
 
-<body class="quarto-light">
+<body class="fullcontent quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Practical Assignment of Advanced Topics in Databases</h1>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Authors</div>
-    <div class="quarto-title-meta-contents">
-             <p>Lourenço </p>
-             <p>Pedro </p>
-             <p>Giuseppe </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<section id="database-setup" class="level2">
-<h2 class="anchored" data-anchor-id="database-setup">Database setup</h2>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">erDiagram
-    tetrominoes {
-        int id
-        int var_id
-        string color
-        polygon geom
-    }
-    puzzles ||--||solutions : for
-    puzzles {
-        int id
-        string name
-        multipoligon geom
-    }
-    solutions {
-        int id
-        int solution_id
-        int puzzle_id
-        multipolygon geom
-    }
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<section id="project-tadb-fcup-20242025" class="level1">
+<h1>Project TADB FCUP 2024/2025</h1>
+<section id="how-to-run-the-project" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-run-the-project">How to run the project</h2>
+<p>Export report ´jupyter nbconvert –to pdf –TemplateExporter.exclude_input=True report.ipynb´ yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g “test_solver(2).” yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g “test_solver(2), halt.”</p>
+<p>quarto render format_test.qmd –to html,pdf</p>
+</section>
+<section id="data-structure-table-creation" class="level2">
+<h2 class="anchored" data-anchor-id="data-structure-table-creation">Data Structure &amp; table creation</h2>
+<p>3 tables: • A table to represent the seven tetrominoes, with additonal atributes that assigns a color and a lePer to a tetromino, as in the picture above; • A table to represent puzzles; • A table to represent solutions of each puzzle of the previous table (the way solutions are represented can have very diﬀerent approaches).</p>
+</section>
+<section id="data-construction" class="level2">
+<h2 class="anchored" data-anchor-id="data-construction">Data Construction</h2>
+<p>• Pieces representation &amp; construction in DB</p>
+<p>• Puzzles representation &amp; construction in DB (at least 5 examples - creativity is a criteria too)</p>
+<p>• Puzzle Solutions representation &amp; construction in DB</p>
+</section>
+<section id="prolog-yappostgis-integration-using-libpq-c-api-functions-that-are-needed-next" class="level2">
+<h2 class="anchored" data-anchor-id="prolog-yappostgis-integration-using-libpq-c-api-functions-that-are-needed-next">Prolog-YAP/PostGIS integration using libpq C API (functions that are needed next)</h2>
+<section id="predicates-implementation-that-are-useful-to-solve-the-puzzles" class="level3">
+<h3 class="anchored" data-anchor-id="predicates-implementation-that-are-useful-to-solve-the-puzzles">predicates implementation that are useful to solve the puzzles</h3>
+<p>• st_diﬀerence • st_translate • st_rotate</p>
+</section>
+<section id="logic-term-representation-of-the-data-fetched-from-the-three-tables" class="level3">
+<h3 class="anchored" data-anchor-id="logic-term-representation-of-the-data-fetched-from-the-three-tables">logic term representation of the data fetched from the three tables</h3>
+</section>
+</section>
+<section id="puzzles-solutions-calculation-using-prolog" class="level2">
+<h2 class="anchored" data-anchor-id="puzzles-solutions-calculation-using-prolog">Puzzles solutions calculation (using prolog)</h2>
+<p>the algorithm using backtracking mechanismo: 1. find the peices/positins combinations (16 figures is the summary) 2. for each of the 16 figures: 2.1. choose one 2.2. position it 2.3. calculate the polygon diference resulting from this figure and positioning 2.4. backtrack with the remaining figures and polygon 2.5. if the remaining space has spaces smaller then 4 grid cells, it is not a solution</p>
+</section>
+<section id="plotting-of-puzzles-using-matplotlib-in-python-initial---in-dark---and-solution-ones---in-color" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-of-puzzles-using-matplotlib-in-python-initial---in-dark---and-solution-ones---in-color">Plotting of puzzles using Matplotlib in python (initial - in dark - and solution ones - in color)</h2>
+</section>
+<section id="final-remarks-comments" class="level2">
+<h2 class="anchored" data-anchor-id="final-remarks-comments">Final Remarks &amp; comments</h2>
+<p>4 page report. presentation.</p>
+</section>
+<section id="appendix" class="level2">
+<h2 class="anchored" data-anchor-id="appendix">APPENDIX</h2>
+</section>
 </section>
 
 </main>

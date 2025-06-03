@@ -7,6 +7,9 @@ Export report
  yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g "test_solver(2)."
  yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g "test_solver(2), halt."
 
+quarto install tinytex
+quarto render format_test.qmd --to html,pdf
+
 ## Data Structure & table creation 
 3 tables:
 • A table to represent the seven tetrominoes, with additonal atributes that assigns a color and a lePer to a tetromino, as in the picture above;
