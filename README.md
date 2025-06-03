@@ -1,11 +1,31 @@
 # Project TADB FCUP 2024/2025
 
-## How to run the project
 
-Export report
-´jupyter nbconvert --to pdf --TemplateExporter.exclude_input=True  report.ipynb´
- yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g "test_solver(2)."
- yap -l /workspaces/project_tadb_fcup_20242025/solver/solver_app.pl -g "test_solver(2), halt."
+[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/pmags/project_tadb_fcup_20242025)
+
+
+## How is the project structured
+
+The project is organized as follows:
+
+```
+.
+├── .devcontainer/            # Container configuration for development
+├── gis_functions/            # C functions for PostGIS integration with YAP
+├── solver/            # YAP implementation of solver
+├── report/                   # Project report and presentation
+│   ├── assets/               # Images and other assets for the report
+│   ├── report.html           # HTML version of the report
+│   ├── report.pdf            # PDF version of the report (if generated)
+│   ├── report.qmd            # Quarto source for the report
+│   └── report_files/         # Supporting files for report.html
+├── utils/                    # Python modules for utility functions
+└── tests/                    # Unit tests
+    └── devcontainer/         # Unit tests for dev environment and prolog
+
+```
+
+## How to run the project
 
 quarto install tinytex
 quarto render format_test.qmd --to html,pdf
