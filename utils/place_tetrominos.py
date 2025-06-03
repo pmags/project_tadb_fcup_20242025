@@ -7,6 +7,45 @@
 
 import psycopg2
 from utils.db import connect_db
+from shapely.geometry import Polygon
+
+def example_place_tetrominoes(
+    tetromino: str,
+    var_id: int,
+    dx: int, 
+    dy: int ) -> str | None:
+    
+    conn = connect_db()
+    cur = conn.cursor()
+    
+    query = """
+        SELECT 
+            ST_AsText(ST_Translate(
+                        t.geom,
+                        %s, 
+                        %s
+                    )) AS geom
+        FROM tetrominoes AS t
+        WHERE
+            LOWER(t.letter) = %s
+            AND var_id = %s;
+    """
+    
+    try: 
+        cur.execute(query, (dx, dy, tetromino.lower(), var_id))
+        conn.commit()
+        result = cur.fetchall()
+        cur.close()
+        conn.close()
+        return result[0]
+
+    
+    except psycopg2.Error as e:
+        print(f"Error getting tetrominoes: {e}")
+        cur.close()
+        conn.close()
+        return None
+    
 
 def place_tetrominoes(
     tetromino: str,

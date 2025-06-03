@@ -2,6 +2,7 @@
 :- use_module(library(system)).
 % :- use_module(library(process)).
 :- use_module(library(lists)).
+:- consult('../gis_functions/export_functions_yap.pl').
 
 % 1. ?- [export_functions_yap].
 % ps: you will get some errors...foreign(...) does not exists. this is a false positive.
@@ -15,7 +16,7 @@
 
 
 :- format('Loading solver.pl...~n'),
-   consult('../../solver/solver_def.pl'),
+    consult('solver_def.pl'),
    format('****** Loaded solver.pl successfully ******.~n').
 
 
@@ -68,12 +69,10 @@ same_letter(L, tetramino(L, _, _)).
 % Main test predicate with debug prints
 % ----------------------------------------------------------------------
 
-test_solver :-
+test_solver(PuzzleID) :-  % Accept PuzzleID as a parameter
 
-    load_puzzle(1, P),
-    format('load_puzzle(1, P) returned: ~w~n', [P]),
-    format('plotting initial puzzle ...~n'),
-    % plot_wkt_from_prolog(P),
+    load_puzzle(PuzzleID, P), % Use the PuzzleID parameter
+    format('load_puzzle(~w, P) returned: ~w~n', [PuzzleID, P]),
     writeln('[DEBUG_SOLVER] 🚀 Loading tetrominoes from DB...'),
 
     load_tetrominoes_list(TetList),  % já é lista de tetramino/3
@@ -84,8 +83,7 @@ test_solver :-
     
     solve(P, 'GEOMETRYCOLLECTION EMPTY', TetrosGrouped, [], FinalPuzzle),
     format('[DEBUG_SOLVER] 🧩 Final puzzle geometry: ~w~n', [FinalPuzzle]),
-    format('plotting solution puzzle ...~n'),
-    save_solution(1, FinalPuzzle).
-    % plot_wkt_from_prolog(FinalPuzzle).
+    save_solution(PuzzleID, FinalPuzzle).
 
-:- initialization(test_solver).
+% To run automatically with a default ID (e.g., 1) when the file is loaded:
+% :- initialization(test_solver(1)).

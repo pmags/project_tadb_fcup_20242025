@@ -6,6 +6,7 @@ from matplotlib.path import Path
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 import matplotlib.patches as patches
+from matplotlib import cm
 from matplotlib.patches import PathPatch
 from shapely.wkt import loads as wkt_loads
 from utils.db import connect_db
@@ -14,7 +15,7 @@ import numpy as np
 
 StrPath: TypeAlias = t.Union[str, os.PathLike]
 
-def plot_geometry(ax: Axes, geom: str, color: str, title: str, is_solution: bool = False) -> Axes:
+def plot_geometry(ax: Axes, geom: str, title: str, color: str = "Blue", is_solution: bool = False) -> Axes:
     """ Plots a postgis geometry on a matplotlib Axes. By ploting into an axis it can then uses with matplotlib subplot to create a grid of plots.
     
     example:
@@ -76,10 +77,16 @@ def plot_geometry(ax: Axes, geom: str, color: str, title: str, is_solution: bool
     
     elif isinstance(poly, MultiPolygon):
         # If geometry is a multipolygon, we can handle it similarly
-        for geom in poly.geoms:
+        # we will color then with random from tab10
+        
+        num_geoms = len(poly.geoms)
+        colormap = cm.get_cmap('tab10', num_geoms if num_geoms <= 10 else 10)
+        
+        for i, geom in enumerate(poly.geoms):
             xs, ys = geom.exterior.xy
+            geom_color = colormap(i % colormap.N)
             ax.fill(xs, ys, 
-                    color=color, 
+                    color=geom_color, 
                     alpha=0.7)
         
         ax.set_title(title)
@@ -127,12 +134,9 @@ def plot_solutions(ax: Axes, puzzle_id:int, title: str, solution_id:int = 1) -> 
         SELECT
             solutions.solution_id,
             solutions.puzzle_id,
-            solutions.tetromino_id,
             ST_AsText(solutions.geom) AS geom,
-            ST_AsText(puzzles.geom) AS puzzle_geom,
-            tetrominoes.color
+            ST_AsText(puzzles.geom) AS puzzle_geom
         FROM solutions
-        LEFT JOIN tetrominoes ON solutions.tetromino_id = tetrominoes.id
         LEFT JOIN puzzles ON solutions.puzzle_id = puzzles.id
         WHERE solution_id = %s AND puzzle_id = %s;
         """
@@ -149,9 +153,9 @@ def plot_solutions(ax: Axes, puzzle_id:int, title: str, solution_id:int = 1) -> 
     
     # Plot solutions
     # start by plotting puzzle background
-    puzzle_ax = plot_geometry(ax, geom=solution[0][4], color="lightgray", title="", is_solution=False)
+    puzzle_ax = plot_geometry(ax, geom=solution[0][3], color="lightgray", title="", is_solution=False)
     
-    poly = wkt_loads(solution[0][4])
+    poly = wkt_loads(solution[0][3])
     minx, miny, maxx, maxy = poly.bounds
     overall_min_x = min(overall_min_x, minx)
     overall_min_y = min(overall_min_y, miny)
@@ -159,8 +163,8 @@ def plot_solutions(ax: Axes, puzzle_id:int, title: str, solution_id:int = 1) -> 
     overall_max_y = max(overall_max_y, maxy)
    
     # plot each solution geometry 
-    for solution_id, puzzle_id, tetromino_id, geom,puzzle_geom, color in solution:
-        ax = plot_geometry(puzzle_ax, geom=geom, color=color, title="", is_solution=False)
+    for solution_id, puzzle_id, geom, puzzle_geom in solution:
+        ax = plot_geometry(puzzle_ax, geom=geom, color="blue", title="", is_solution=False)
     
     ax.set_title(title)
     ax.set_xlim(overall_min_x - 0.5, overall_max_x + 0.5)
