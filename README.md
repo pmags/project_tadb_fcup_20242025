@@ -1,5 +1,6 @@
 # Project TADB FCUP 2024/2025
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/pmags/project_tadb_fcup_20242025)
 
 [![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/pmags/project_tadb_fcup_20242025)
 
